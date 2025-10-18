@@ -6,6 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fillViewport="true"
+    android:background="@color/background_light"
     tools:context=".VideosFragment">
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -42,6 +43,7 @@
             app:cardUseCompatPadding="true"
             app:cardCornerRadius="8dp"
             app:cardElevation="2dp"
+            app:cardBackgroundColor="#F4FCD9"
             app:layout_constraintTop_toTopOf="@id/horizontalConstraint1"
             app:layout_constraintStart_toStartOf="@id/verticalConstraint1"
             app:layout_constraintEnd_toStartOf="@id/verticalConstraint2">
@@ -93,6 +95,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="12dp"
             app:cardCornerRadius="8dp"
+            app:cardBackgroundColor="#FFDAB8"
             app:cardUseCompatPadding="true"
             app:layout_constraintTop_toBottomOf="@id/textView1"
             app:layout_constraintStart_toStartOf="@id/verticalConstraint1"
@@ -141,6 +144,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="12dp"
             app:cardCornerRadius="8dp"
+
             app:cardUseCompatPadding="true"
             app:layout_constraintTop_toBottomOf="@id/cardContent1"
             app:layout_constraintStart_toStartOf="@id/verticalConstraint1"
@@ -190,6 +194,7 @@
             android:layout_marginTop="12dp"
             android:layout_marginBottom="16dp"
             app:cardCornerRadius="8dp"
+            app:cardBackgroundColor="#FFE1E1"
             app:cardUseCompatPadding="true"
             app:layout_constraintTop_toBottomOf="@id/card2Content1"
             app:layout_constraintStart_toStartOf="@id/verticalConstraint1"

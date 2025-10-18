@@ -6,6 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fillViewport="true"
+    android:background="@color/background_light"
     tools:context=".RealizationFragment">
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -49,6 +50,7 @@
             app:cardUseCompatPadding="true"
             app:cardCornerRadius="8dp"
             app:cardElevation="2dp"
+            app:cardBackgroundColor="#F4FCD9"
             app:layout_constraintTop_toTopOf="@id/horizontalConstraint1"
             app:layout_constraintStart_toStartOf="@id/verticalConstraint1"
             app:layout_constraintEnd_toStartOf="@id/verticalConstraint2">
@@ -108,6 +110,7 @@
             android:layout_height="46dp"
             android:layout_marginTop="8dp"
             android:text="@string/realization_my_journey"
+            android:backgroundTint="@color/button_green"
             app:layout_constraintTop_toBottomOf="@id/textView6"
             app:layout_constraintStart_toStartOf="@id/verticalConstraint3"
             app:layout_constraintEnd_toStartOf="@id/verticalConstraint2" />
@@ -123,13 +126,14 @@
             app:layout_constraintStart_toStartOf="@id/verticalConstraint1"
             app:layout_constraintEnd_toStartOf="@id/verticalConstraint2" />
 
-        <!-- Card 1 -->
+        <!-- Card 1 happy -->
         <androidx.cardview.widget.CardView
             android:id="@+id/cardContent1"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="12dp"
             app:cardCornerRadius="8dp"
+            app:cardBackgroundColor="#C5D8A4"
             app:cardUseCompatPadding="true"
             app:layout_constraintTop_toBottomOf="@id/textView10"
             app:layout_constraintStart_toStartOf="@id/verticalConstraint1"
@@ -172,13 +176,14 @@
             </LinearLayout>
         </androidx.cardview.widget.CardView>
 
-        <!-- Card 2 -->
+        <!-- Card 2 grateful -->
         <androidx.cardview.widget.CardView
             android:id="@+id/cardContent2"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="12dp"
             app:cardCornerRadius="8dp"
+            app:cardBackgroundColor="#FFB8C7"
             app:cardUseCompatPadding="true"
             app:layout_constraintTop_toBottomOf="@id/cardContent1"
             app:layout_constraintStart_toStartOf="@id/verticalConstraint1"
@@ -221,13 +226,14 @@
             </LinearLayout>
         </androidx.cardview.widget.CardView>
 
-        <!-- Card 3 -->
+        <!-- Card 3 worried -->
         <androidx.cardview.widget.CardView
             android:id="@+id/cardContent3"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="12dp"
             app:cardCornerRadius="8dp"
+            app:cardBackgroundColor="#CBE2FF"
             app:cardUseCompatPadding="true"
             app:layout_constraintTop_toBottomOf="@id/cardContent2"
             app:layout_constraintStart_toStartOf="@id/verticalConstraint1"
@@ -270,7 +276,7 @@
             </LinearLayout>
         </androidx.cardview.widget.CardView>
 
-        <!-- Card 4 -->
+        <!-- Card 4 loved -->
         <androidx.cardview.widget.CardView
             android:id="@+id/cardContent4"
             android:layout_width="0dp"
@@ -278,6 +284,7 @@
             android:layout_marginTop="12dp"
             android:layout_marginBottom="16dp"
             app:cardCornerRadius="8dp"
+            app:cardBackgroundColor="#FFC7B6"
             app:cardUseCompatPadding="true"
             app:layout_constraintTop_toBottomOf="@id/cardContent3"
             app:layout_constraintStart_toStartOf="@id/verticalConstraint1"
