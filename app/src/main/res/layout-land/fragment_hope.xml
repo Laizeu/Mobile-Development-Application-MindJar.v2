@@ -12,6 +12,7 @@
     android:clipToPadding="false"
     android:paddingTop="16dp"
     android:paddingBottom="16dp"
+    android:background="@color/background_light"
     tools:context=".HopeFragment">
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -39,6 +40,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
+            app:cardBackgroundColor="#F4FCD9"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintStart_toStartOf="@id/verticalConstraint1"
             app:layout_constraintEnd_toStartOf="@id/verticalConstraint2"

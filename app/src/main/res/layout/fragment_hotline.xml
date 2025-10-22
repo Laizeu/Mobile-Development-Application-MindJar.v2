@@ -89,7 +89,7 @@
             app:layout_constraintEnd_toStartOf="@id/verticalConstraint2" />
 
         <!-- Card template (reused 3x) -->
-        <!-- 1 -->
+        <!-- card 1 -->
         <androidx.cardview.widget.CardView
             android:id="@+id/cardContent1"
             android:layout_width="0dp"

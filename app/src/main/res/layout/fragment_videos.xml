@@ -88,7 +88,7 @@
             app:layout_constraintStart_toStartOf="@id/verticalConstraint1"
             app:layout_constraintEnd_toStartOf="@id/verticalConstraint2" />
 
-        <!-- Video card helper -->
+        <!-- Video card helper 1 -->
         <androidx.cardview.widget.CardView
             android:id="@+id/cardContent1"
             android:layout_width="0dp"
@@ -138,6 +138,7 @@
             </LinearLayout>
         </androidx.cardview.widget.CardView>
 
+        <!-- Video card helper 2 -->
         <androidx.cardview.widget.CardView
             android:id="@+id/card2Content1"
             android:layout_width="0dp"
@@ -187,6 +188,7 @@
             </LinearLayout>
         </androidx.cardview.widget.CardView>
 
+        <!-- Video card helper 3 -->
         <androidx.cardview.widget.CardView
             android:id="@+id/card3Content1"
             android:layout_width="0dp"
