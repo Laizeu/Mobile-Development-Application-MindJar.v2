@@ -110,9 +110,9 @@
                 android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:layout_margin="6dp"
-                android:padding="10dp"
-                android:background="#BFDDA0">
+                android:padding="10dp">
                 <ImageView
+                    android:id="@+id/happyIcon"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:scaleType="fitCenter"
@@ -126,9 +126,9 @@
                 android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:layout_margin="6dp"
-                android:padding="10dp"
-                android:background="#B8D6FF">
+                android:padding="10dp">
                 <ImageView
+                    android:id="@+id/sadIcon"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:scaleType="fitCenter"
@@ -142,9 +142,9 @@
                 android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:layout_margin="6dp"
-                android:padding="10dp"
-                android:background="#FFD07F">
+                android:padding="10dp">
                 <ImageView
+                    android:id="@+id/pressuredIcon"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:scaleType="fitCenter"
@@ -158,9 +158,9 @@
                 android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:layout_margin="6dp"
-                android:padding="10dp"
-                android:background="#F28A80">
+                android:padding="10dp">
                 <ImageView
+                    android:id="@+id/angryIcon"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:scaleType="fitCenter"
@@ -247,6 +247,7 @@
             app:layout_constraintWidth_max="900dp">
 
             <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/inputFeeling"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:minLines="4"
