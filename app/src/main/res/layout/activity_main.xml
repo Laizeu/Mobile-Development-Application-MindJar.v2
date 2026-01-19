@@ -10,28 +10,28 @@
 
 <!--    Vertical Constraints-->
     <androidx.constraintlayout.widget.Guideline
-        android:id="@+id/contraintVertical1"
+        android:id="@+id/constraintVertical1"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="vertical"
         app:layout_constraintGuide_percent="0.10"/>
 
     <androidx.constraintlayout.widget.Guideline
-        android:id="@+id/contraintVertical2"
+        android:id="@+id/constraintVertical2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="vertical"
         app:layout_constraintGuide_percent="0.90"/>
 
     <androidx.constraintlayout.widget.Guideline
-        android:id="@+id/contraintVertical3"
+        android:id="@+id/constraintVertical3"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="vertical"
         app:layout_constraintGuide_percent="0.37"/>
 
     <androidx.constraintlayout.widget.Guideline
-        android:id="@+id/contraintVertical4"
+        android:id="@+id/constraintVertical4"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="vertical"
@@ -40,32 +40,32 @@
 <!--    Horizontal Constraints -->
 
     <androidx.constraintlayout.widget.Guideline
-        android:id="@+id/contraintHorizontal1"
+        android:id="@+id/constraintHorizontal1"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         app:layout_constraintGuide_percent="0.10" />
 
     <androidx.constraintlayout.widget.Guideline
-        android:id="@+id/contraintHorizontal2"
+        android:id="@+id/constraintHorizontal2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        app:layout_constraintGuide_end="90dp" />
+        app:layout_constraintGuide_end="5dp" />
 
     <androidx.constraintlayout.widget.Guideline
-        android:id="@+id/contraintHorizontal3"
+        android:id="@+id/constraintHorizontal3"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         app:layout_constraintGuide_percent="0.35" />
 
     <androidx.constraintlayout.widget.Guideline
-        android:id="@+id/contraintHorizontal4"
+        android:id="@+id/constraintHorizontal4"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        app:layout_constraintGuide_percent="0.81" />
+        app:layout_constraintGuide_percent="0.83" />
 
     <!--    Text View -->
 
@@ -76,9 +76,9 @@
         android:layout_marginTop="4dp"
         android:text="YOUR EMOTION'S MATTER"
         android:textAlignment="center"
-        android:textSize="12dp"
+        android:textSize="12sp"
         android:textStyle="bold"
-        app:layout_constraintEnd_toStartOf="@+id/contraintVertical2"
+        app:layout_constraintEnd_toStartOf="@+id/constraintVertical2"
         app:layout_constraintHorizontal_bias="0.4"
         app:layout_constraintStart_toEndOf="@+id/imageView3"
         app:layout_constraintTop_toBottomOf="@+id/textHeading"
@@ -91,107 +91,111 @@
         android:layout_marginTop="60dp"
         android:text="MINDJAR"
         android:textAlignment="center"
-        android:textSize="30dp"
+        android:textSize="30sp"
         android:textStyle="bold"
-        app:layout_constraintEnd_toStartOf="@+id/contraintVertical2"
+        app:layout_constraintEnd_toStartOf="@+id/constraintVertical2"
         app:layout_constraintHorizontal_bias="0.4"
         app:layout_constraintStart_toEndOf="@+id/imageView3"
-        app:layout_constraintTop_toTopOf="@+id/contraintHorizontal1"
+        app:layout_constraintTop_toTopOf="@+id/constraintHorizontal1"
         tools:ignore="MissingConstraints" />
 
+
+    <!-- Input Validation edited by Laiza-->
+
+
+    <!-- Text Input of Email -->
     <TextView
-        android:id="@+id/textUserName"
+        android:id="@+id/inputEmail"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:text="User Name"
+
         android:textSize="20sp"
         android:textStyle="bold"
-        app:layout_constraintEnd_toStartOf="@+id/contraintVertical2"
-        app:layout_constraintStart_toStartOf="@+id/contraintVertical1"
-        app:layout_constraintTop_toTopOf="@+id/contraintHorizontal3"
-        tools:ignore="MissingConstraints" />
+        android:text="Email"
+
+        app:layout_constraintEnd_toStartOf="@+id/constraintVertical2"
+        app:layout_constraintStart_toStartOf="@+id/constraintVertical1"
+        app:layout_constraintTop_toTopOf="@+id/constraintHorizontal3"
+        tools:ignore="MissingConstraints"
+        />
+
+
+    <!-- Edit Text of Email  -->
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/emailContainer"
+        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        app:helperTextEnabled="true"
+        app:helperTextTextColor="@android:color/holo_red_dark"
+        app:layout_constraintEnd_toStartOf="@+id/constraintVertical2"
+        app:layout_constraintStart_toStartOf="@+id/constraintVertical1"
+        app:layout_constraintTop_toBottomOf="@+id/inputEmail">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/editEmail"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:inputType="textEmailAddress"
+            android:lines="1" />
+    </com.google.android.material.textfield.TextInputLayout>
+
+
+    <!-- Text Input of Password edited by Laiza -->
 
     <TextView
         android:id="@+id/textPassword"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="20sp"
+
         android:text="Password"
-        android:textSize="20dp"
+        android:textSize="20sp"
         android:textStyle="bold"
-        app:layout_constraintEnd_toStartOf="@+id/contraintVertical2"
+
+        app:layout_constraintEnd_toStartOf="@+id/constraintVertical2"
         app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="@+id/contraintVertical1"
-        app:layout_constraintTop_toBottomOf="@+id/editUserName"
+        app:layout_constraintStart_toStartOf="@+id/constraintVertical1"
+        app:layout_constraintTop_toBottomOf="@+id/emailContainer"
         tools:ignore="MissingConstraints" />
 
+    <!-- Edit Text of Password edited by Laiza -->
 
-    <!--    Image View-->
-
-    <TextView
-        android:id="@+id/textForgotPassword"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
-        android:text="Forgot Password"
-        android:textStyle="italic"
-        app:layout_constraintEnd_toStartOf="@+id/contraintVertical2"
-        app:layout_constraintHorizontal_bias="0.505"
-        app:layout_constraintStart_toStartOf="@+id/contraintVertical1"
-        app:layout_constraintTop_toBottomOf="@+id/button"
-        tools:ignore="MissingConstraints" />
-
-    <TextView
-        android:id="@+id/textView7"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
-        android:text="Or Register With"
-        app:layout_constraintEnd_toStartOf="@+id/contraintVertical2"
-        app:layout_constraintHorizontal_bias="0.513"
-        app:layout_constraintStart_toStartOf="@+id/contraintVertical1"
-        app:layout_constraintTop_toBottomOf="@+id/textForgotPassword" />
-
-    <ImageView
-        android:id="@+id/imageView3"
-        android:layout_width="133dp"
-        android:layout_height="145dp"
-        app:layout_constraintStart_toStartOf="@+id/contraintVertical1"
-        app:layout_constraintTop_toTopOf="@+id/contraintHorizontal1"
-        app:srcCompat="@drawable/jar_icon"
-        tools:ignore="MissingConstraints" />
-
-    <EditText
-        android:id="@+id/editUserName"
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/passwordContainer"
+        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:ems="10"
-        android:inputType="text"
-        app:layout_constraintEnd_toStartOf="@+id/contraintVertical2"
-        app:layout_constraintStart_toStartOf="@+id/contraintVertical1"
-        app:layout_constraintTop_toBottomOf="@+id/textUserName"
-        tools:ignore="MissingConstraints" />
+        android:layout_marginTop="12dp"
+        app:helperTextEnabled="true"
+        app:helperTextTextColor="@android:color/holo_red_dark"
+        app:endIconMode="password_toggle"
+        app:layout_constraintEnd_toStartOf="@+id/constraintVertical2"
+        app:layout_constraintStart_toStartOf="@+id/constraintVertical1"
+        app:layout_constraintTop_toBottomOf="@+id/textPassword">
 
-    <EditText
-        android:id="@+id/editPassword"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:ems="10"
-        android:inputType="textPassword"
-        app:layout_constraintEnd_toStartOf="@+id/contraintVertical2"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="@+id/contraintVertical1"
-        app:layout_constraintTop_toBottomOf="@+id/textPassword" />
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/editPassword"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:inputType="textPassword"
+            android:lines="1" />
+    </com.google.android.material.textfield.TextInputLayout>
 
+
+    <!-- Remember me check box -->
     <CheckBox
         android:id="@+id/checkBox"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:text="Remember Me"
-        app:layout_constraintEnd_toStartOf="@+id/contraintVertical2"
-        app:layout_constraintStart_toStartOf="@+id/contraintVertical1"
-        app:layout_constraintTop_toBottomOf="@+id/editPassword"
+        app:layout_constraintEnd_toStartOf="@+id/constraintVertical2"
+        app:layout_constraintStart_toStartOf="@+id/constraintVertical1"
+        app:layout_constraintTop_toBottomOf="@+id/passwordContainer"
         tools:ignore="MissingConstraints" />
+
+    <!-- Login Button -->
 
     <Button
         android:id="@+id/button"
@@ -202,20 +206,57 @@
         android:text="Login"
         android:textSize="20sp"
         android:backgroundTint="@color/button_green"
-        app:layout_constraintEnd_toStartOf="@+id/contraintVertical2"
+        app:layout_constraintEnd_toStartOf="@+id/constraintVertical2"
         app:layout_constraintHorizontal_bias="0.494"
-        app:layout_constraintStart_toStartOf="@+id/contraintVertical1"
+        app:layout_constraintStart_toStartOf="@+id/constraintVertical1"
         app:layout_constraintTop_toBottomOf="@+id/checkBox"
+        tools:ignore="MissingConstraints" />
+
+    <!-- Forgot Password edited by Laiza-->
+
+    <TextView
+        android:id="@+id/textForgotPassword"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:text="Forgot Password?"
+        android:textStyle="italic"
+        app:layout_constraintEnd_toStartOf="@+id/constraintVertical2"
+        app:layout_constraintHorizontal_bias="0.505"
+        app:layout_constraintStart_toStartOf="@+id/constraintVertical1"
+        app:layout_constraintTop_toBottomOf="@+id/button"
+        tools:ignore="MissingConstraints" />
+
+    <!-- Or register with edited by Laiza-->
+
+    <TextView
+        android:id="@+id/textView7"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:text="Or Register With"
+        app:layout_constraintEnd_toStartOf="@+id/constraintVertical2"
+        app:layout_constraintHorizontal_bias="0.513"
+        app:layout_constraintStart_toStartOf="@+id/constraintVertical1"
+        app:layout_constraintTop_toBottomOf="@+id/textForgotPassword" />
+
+    <ImageView
+        android:id="@+id/imageView3"
+        android:layout_width="133dp"
+        android:layout_height="145dp"
+        app:layout_constraintStart_toStartOf="@+id/constraintVertical1"
+        app:layout_constraintTop_toTopOf="@+id/constraintHorizontal1"
+        app:srcCompat="@drawable/jar_icon"
         tools:ignore="MissingConstraints" />
 
     <ImageView
         android:id="@+id/iconTwitter"
         android:layout_width="68dp"
         android:layout_height="64dp"
-        app:layout_constraintBottom_toTopOf="@+id/contraintHorizontal2"
-        app:layout_constraintEnd_toStartOf="@+id/contraintVertical4"
-        app:layout_constraintStart_toStartOf="@+id/contraintVertical3"
-        app:layout_constraintTop_toTopOf="@+id/contraintHorizontal4"
+        app:layout_constraintBottom_toTopOf="@+id/constraintHorizontal2"
+        app:layout_constraintEnd_toStartOf="@+id/constraintVertical4"
+        app:layout_constraintStart_toStartOf="@+id/constraintVertical3"
+        app:layout_constraintTop_toTopOf="@+id/constraintHorizontal4"
         app:srcCompat="@drawable/twitter_circle"
         tools:ignore="MissingConstraints" />
 
@@ -223,22 +264,23 @@
         android:id="@+id/iconGoogle"
         android:layout_width="68dp"
         android:layout_height="64dp"
-        app:layout_constraintBottom_toTopOf="@+id/contraintHorizontal2"
-        app:layout_constraintEnd_toStartOf="@+id/contraintVertical3"
-        app:layout_constraintStart_toStartOf="@+id/contraintVertical1"
-        app:layout_constraintTop_toTopOf="@+id/contraintHorizontal4"
-        app:srcCompat="@drawable/google" />
+        app:layout_constraintBottom_toTopOf="@+id/constraintHorizontal2"
+        app:layout_constraintEnd_toStartOf="@+id/constraintVertical3"
+        app:layout_constraintStart_toStartOf="@+id/constraintVertical1"
+        app:layout_constraintTop_toTopOf="@+id/constraintHorizontal4"
+        app:srcCompat="@drawable/google"
+        tools:ignore="MissingConstraints" />
 
     <ImageView
         android:id="@+id/iconFacebook"
         android:layout_width="68dp"
         android:layout_height="64dp"
-        app:layout_constraintBottom_toTopOf="@+id/contraintHorizontal2"
-        app:layout_constraintEnd_toStartOf="@+id/contraintVertical2"
-        app:layout_constraintStart_toStartOf="@+id/contraintVertical4"
-        app:layout_constraintTop_toTopOf="@+id/contraintHorizontal4"
-        app:srcCompat="@drawable/facebook" />
-
+        app:layout_constraintBottom_toTopOf="@+id/constraintHorizontal2"
+        app:layout_constraintEnd_toStartOf="@+id/constraintVertical2"
+        app:layout_constraintStart_toStartOf="@+id/constraintVertical4"
+        app:layout_constraintTop_toTopOf="@+id/constraintHorizontal4"
+        app:srcCompat="@drawable/facebook"
+        tools:ignore="MissingConstraints" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
 

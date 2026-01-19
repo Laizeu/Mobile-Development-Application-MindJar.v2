@@ -106,5 +106,7 @@
     <string name="cd_google">Register with Google</string>
     <string name="cd_facebook">Register with Facebook</string>
     <string name="cd_twitter">Register with Twitter</string>
+    <string name="Required">Required</string>
+    <string name="email">email</string>
 
 </resources>
