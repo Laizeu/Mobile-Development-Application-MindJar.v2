@@ -12,7 +12,6 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentTransaction;
 
 public class Dashboard extends AppCompatActivity implements View.OnClickListener {
 
@@ -42,7 +41,7 @@ public class Dashboard extends AppCompatActivity implements View.OnClickListener
 
         if (savedInstanceState == null) {
             selectedIconId = R.id.homeIcon;
-            accessFragments(new HomeFragment());
+            openTab(new HomeFragment());
             tintSelection(homeIcon);
         } else {
             selectedIconId = savedInstanceState.getInt(KEY_SELECTED_ICON_ID, R.id.homeIcon);
@@ -68,6 +67,7 @@ public class Dashboard extends AppCompatActivity implements View.OnClickListener
 
     private void changeColorIcon(View v) {
         // reset all to black
+        clearBackStack();
         int black = ContextCompat.getColor(this, R.color.black);
         homeIcon.setColorFilter(black);
         realizationIcon.setColorFilter(black);
@@ -79,19 +79,19 @@ public class Dashboard extends AppCompatActivity implements View.OnClickListener
         selectedIconId = v.getId();
 
         if (v.getId() == R.id.homeIcon) {
-            accessFragments(new HomeFragment());
+            openTab(new HomeFragment());
             homeIcon.setColorFilter(active);
         } else if (v.getId() == R.id.realizationIcon) {
-            accessFragments(new RealizationFragment());
+            openTab(new RealizationFragment());
             realizationIcon.setColorFilter(active);
         } else if (v.getId() == R.id.hopeIcon) {
-            accessFragments(new HopeFragment());
+            openTab(new HopeFragment());
             hopeIcon.setColorFilter(active);
         } else if (v.getId() == R.id.videosIcon) {
-            accessFragments(new VideosFragment());
+            openTab(new VideosFragment());
             videosIcon.setColorFilter(active);
         } else if (v.getId() == R.id.hotlineIcon) {
-            accessFragments(new HotlineFragment());
+            openTab(new HotlineFragment());
             hotlineIcon.setColorFilter(active);
         }
     }
@@ -106,10 +106,35 @@ public class Dashboard extends AppCompatActivity implements View.OnClickListener
         iv.setColorFilter(Color.parseColor("#73903F"));
     }
 
-    private void accessFragments(Fragment fragment) {
-        FragmentManager fm = getSupportFragmentManager();
-        FragmentTransaction tx = fm.beginTransaction();
-        tx.replace(R.id.fragmentContainerView2, fragment);
-        tx.commit();
+    // Bottom tabs: no back stack
+    private void openTab(Fragment fragment) {
+        getSupportFragmentManager()
+                .beginTransaction()
+                .replace(R.id.fragmentContainerView2, fragment)
+                .commit();
     }
+
+    // Deeper screens: add to back stack
+    public void openScreen(Fragment fragment) {
+        getSupportFragmentManager()
+                .beginTransaction()
+                .replace(R.id.fragmentContainerView2, fragment)
+                .addToBackStack(null)
+                .commit();
+    }
+
+    private void clearBackStack() {
+        getSupportFragmentManager().popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
+    }
+
+    @Override
+    public void onBackPressed() {
+        FragmentManager fm = getSupportFragmentManager();
+        if (fm.getBackStackEntryCount() > 0) {
+            fm.popBackStack();   // go back within deeper screens
+        } else {
+            super.onBackPressed(); // exit app shell
+        }
+    }
+
 }

@@ -45,7 +45,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         btnLogin.setOnClickListener(this);
 
-        // Show/hide password (your code, still works)
+        // Show/hide password
         checkPassword.setOnCheckedChangeListener((buttonView, isChecked) -> {
             if (isChecked) {
                 editPassword.setTransformationMethod(HideReturnsTransformationMethod.getInstance());
@@ -90,6 +90,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             emailContainer.setHelperText(null);
         }
 
+        // Input Validation
         passwordContainer.setHelperText(passErr);
 
         if (!emailOk || passErr != null) {
@@ -97,7 +98,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             return;
         }
 
-        // Your sample login logic
+        // Credentials
         if (email.equals("test@gmail.com") && password.equals("Password1!")) {
             Intent toDashboardPage = new Intent(MainActivity.this, Dashboard.class);
             startActivity(toDashboardPage);
@@ -106,6 +107,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         }
     }
 
+    // Error Handling
     private void validateEmailLive(String email) {
         email = email.trim();
 
@@ -158,7 +160,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         return null; // valid
     }
 
-    // Simple TextWatcher helper
+    // TextWatcher helper
     public abstract static class SimpleTextWatcher implements TextWatcher {
         @Override public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
         @Override public void afterTextChanged(Editable s) {}
