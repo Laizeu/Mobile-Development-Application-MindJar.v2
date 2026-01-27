@@ -4,6 +4,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:fillViewport="true"
+    android:background="@color/background_light"
     tools:context=".HopeFragment">
 
     <!--    Horizontal Constraints-->
@@ -35,6 +37,7 @@
         android:layout_width="0dp"
         android:layout_height="100dp"
         app:cardCornerRadius="8dp"
+        app:cardBackgroundColor="#F4FCD9"
         app:layout_constraintEnd_toStartOf="@+id/verticalConstraint2"
         app:layout_constraintStart_toStartOf="@+id/verticalConstraint1"
         app:layout_constraintTop_toTopOf="@+id/horizontalConstraint1"

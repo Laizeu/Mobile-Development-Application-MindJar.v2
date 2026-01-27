@@ -23,12 +23,12 @@ public class HopeFragment extends Fragment {
 
     private ImageView visibleImage, arrowLeft, arrowRight, heartIcon;
     private int currentIndex = 0;
-    // 🖼️ Your image list in drawable
+    // Your image list in drawable
     private int[] hopeImages = {
-            R.drawable.inspirational_image,   // your first image
-            R.drawable.hope2,          // add your second
-            R.drawable.hope3,          // add your third
-            R.drawable.hope4           // add more as needed
+            R.drawable.inspirational_image,   // first image
+            R.drawable.hope2,          // second image
+            R.drawable.hope3,          // third image
+            R.drawable.hope4           // fourth image; add more as needed
     };
 
     @SuppressLint("MissingInflatedId")
@@ -38,13 +38,13 @@ public class HopeFragment extends Fragment {
                                       @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_hope, container, false);
 
-        // Connect to your XML views
+        // Connect to XML views
         arrowLeft = view.findViewById(R.id.arrowLeft);
         arrowRight = view.findViewById(R.id.arrowRight);
         visibleImage = view.findViewById(R.id.currentImage);
         heartIcon = view.findViewById(R.id.heart);
 
-        // Set initial image and quote
+        // initial image and quote
         updateContent();
 
         // Next button (right arrow)

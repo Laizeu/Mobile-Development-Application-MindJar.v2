@@ -20,7 +20,7 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
 
     private ImageView iconHappy, iconSad, iconPressured, iconAngry;
     private Button btnSave;
-    private boolean isIconSelected = false; // ✅ persistent flag
+    private boolean isIconSelected = false; // persistent flag
     private TextInputEditText textFeeling;
 
 

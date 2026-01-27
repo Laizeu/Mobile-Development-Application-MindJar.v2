@@ -17,6 +17,12 @@ public class Dashboard extends AppCompatActivity implements View.OnClickListener
 
     private static final String KEY_SELECTED_ICON_ID = "selected_icon_id";
 
+    // Tab fragments (created once)
+    private Fragment homeFragment, realizationFragment, hopeFragment, videosFragment, hotlineFragment;
+
+    // Track which tab fragment is currently visible
+    private Fragment activeFragment;
+
     private ImageView homeIcon, realizationIcon, hopeIcon, videosIcon, hotlineIcon;
     private int selectedIconId = 0;
 
@@ -39,12 +45,55 @@ public class Dashboard extends AppCompatActivity implements View.OnClickListener
         videosIcon.setOnClickListener(this);
         hotlineIcon.setOnClickListener(this);
 
+        FragmentManager fm = getSupportFragmentManager();
+
         if (savedInstanceState == null) {
+            // Create fragment once
+            homeFragment = new HomeFragment();
+            realizationFragment = new RealizationFragment();
+            hopeFragment = new HopeFragment();
+            videosFragment = new VideosFragment();
+            hotlineFragment = new HotlineFragment();
+
+            // Add them once, hide the others
+            fm.beginTransaction()
+                    .add(R.id.fragmentContainerView2, homeFragment, "HOME")
+                    .add(R.id.fragmentContainerView2, realizationFragment, "REALIZATION").hide(realizationFragment)
+                    .add(R.id.fragmentContainerView2, hopeFragment, "HOPE").hide(hopeFragment)
+                    .add(R.id.fragmentContainerView2, videosFragment, "VIDEOS").hide(videosFragment)
+                    .add(R.id.fragmentContainerView2, hotlineFragment, "HOTLINE").hide(hotlineFragment)
+                    .commit();
+
+            activeFragment = homeFragment;
+
             selectedIconId = R.id.homeIcon;
-            openTab(new HomeFragment());
             tintSelection(homeIcon);
+
         } else {
+            // Reconnect to existing fragments after rotation/recreate
+            homeFragment = fm.findFragmentByTag("HOME");
+            realizationFragment = fm.findFragmentByTag("REALIZATION");
+            hopeFragment = fm.findFragmentByTag("HOPE");
+            videosFragment = fm.findFragmentByTag("VIDEOS");
+            hotlineFragment = fm.findFragmentByTag("HOTLINE");
+
             selectedIconId = savedInstanceState.getInt(KEY_SELECTED_ICON_ID, R.id.homeIcon);
+
+            // Set the correct active fragment based on selected tab
+            activeFragment = fragmentForIcon(selectedIconId);
+            if (activeFragment == null) activeFragment = homeFragment;
+
+            // Make sure the correct fragment is shown
+            fm.beginTransaction()
+                    .hide(homeFragment)
+                    .hide(realizationFragment)
+                    .hide(hopeFragment)
+                    .hide(videosFragment)
+                    .hide(hotlineFragment)
+                    .show(activeFragment)
+                    .commit();
+
+            // Tint correct icon
             View v = findViewById(selectedIconId);
             if (v != null) changeColorIcon(v);
         }
@@ -67,7 +116,6 @@ public class Dashboard extends AppCompatActivity implements View.OnClickListener
 
     private void changeColorIcon(View v) {
         // reset all to black
-        clearBackStack();
         int black = ContextCompat.getColor(this, R.color.black);
         homeIcon.setColorFilter(black);
         realizationIcon.setColorFilter(black);
@@ -79,19 +127,19 @@ public class Dashboard extends AppCompatActivity implements View.OnClickListener
         selectedIconId = v.getId();
 
         if (v.getId() == R.id.homeIcon) {
-            openTab(new HomeFragment());
+            openTab(homeFragment);
             homeIcon.setColorFilter(active);
         } else if (v.getId() == R.id.realizationIcon) {
-            openTab(new RealizationFragment());
+            openTab(realizationFragment);
             realizationIcon.setColorFilter(active);
         } else if (v.getId() == R.id.hopeIcon) {
-            openTab(new HopeFragment());
+            openTab(hopeFragment);
             hopeIcon.setColorFilter(active);
         } else if (v.getId() == R.id.videosIcon) {
-            openTab(new VideosFragment());
+            openTab(videosFragment);
             videosIcon.setColorFilter(active);
         } else if (v.getId() == R.id.hotlineIcon) {
-            openTab(new HotlineFragment());
+            openTab(hotlineFragment);
             hotlineIcon.setColorFilter(active);
         }
     }
@@ -106,15 +154,20 @@ public class Dashboard extends AppCompatActivity implements View.OnClickListener
         iv.setColorFilter(Color.parseColor("#73903F"));
     }
 
-    // Bottom tabs: no back stack
-    private void openTab(Fragment fragment) {
+    // Bottom navigation for tab switching: no need for back stack
+    private void openTab(Fragment target) {
+        if (target == null || target == activeFragment) return;
+
         getSupportFragmentManager()
                 .beginTransaction()
-                .replace(R.id.fragmentContainerView2, fragment)
+                .hide(activeFragment)
+                .show(target)
                 .commit();
+
+        activeFragment = target;
     }
 
-    // Deeper screens: add to back stack
+    // Deeper screens: replace + add to back stack
     public void openScreen(Fragment fragment) {
         getSupportFragmentManager()
                 .beginTransaction()
@@ -123,8 +176,13 @@ public class Dashboard extends AppCompatActivity implements View.OnClickListener
                 .commit();
     }
 
-    private void clearBackStack() {
-        getSupportFragmentManager().popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
+    private Fragment fragmentForIcon(int iconId) {
+        if (iconId == R.id.homeIcon) return homeFragment;
+        if (iconId == R.id.realizationIcon) return realizationFragment;
+        if (iconId == R.id.hopeIcon) return hopeFragment;
+        if (iconId == R.id.videosIcon) return videosFragment;
+        if (iconId == R.id.hotlineIcon) return hotlineFragment;
+        return homeFragment;
     }
 
     @Override

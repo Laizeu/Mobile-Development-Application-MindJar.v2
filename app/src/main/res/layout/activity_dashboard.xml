@@ -146,15 +146,14 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="@+id/verticalConstraint4" />
 
-    <androidx.fragment.app.FragmentContainerView
+    <FrameLayout
         android:id="@+id/fragmentContainerView2"
-        android:name="com.example.myapplication.HomeFragment"
-        android:layout_width="389dp"
-        android:layout_height="702dp"
-        app:layout_constraintBottom_toTopOf="@+id/horizontalConstraint1"
-        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toTopOf="@+id/horizontalConstraint1" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>
