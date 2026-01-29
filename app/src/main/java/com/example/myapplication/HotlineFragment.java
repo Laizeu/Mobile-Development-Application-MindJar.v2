@@ -69,9 +69,9 @@ public class HotlineFragment extends Fragment implements View.OnClickListener {
     }
     private void openSMSApp(String phoneNumber) {
         try {
-            // Use ACTION_SENDTO with smsto: URI (this ensures only SMS apps handle it)
+            // Use ACTION_SEND TO with sms to: URI (this ensures only SMS apps handle it)
             Intent intent = new Intent(Intent.ACTION_SENDTO);
-            intent.setData(Uri.parse("smsto:" + phoneNumber)); // "smsto:" is required (NOT "sms:")
+            intent.setData(Uri.parse("sms to:" + phoneNumber)); // "sms to:" is required (NOT "sms:")
             intent.putExtra("sms_body", "Please help me.");
 
             if (intent.resolveActivity(requireActivity().getPackageManager()) != null) {
