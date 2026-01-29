@@ -123,13 +123,24 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
      * Handles the user's emotion selection by resetting all icons and highlighting the chosen one.
      */
     private void handleIconClick(int iconId) {
-        resetIconBackgrounds();
+        clearIconSelections();
         selectedFeelingIconId = iconId;
 
         // Highlight the selected icon so the user can see their current choice.
-        View selectedIconView = requireView().findViewById(iconId);
-        selectedIconView.setBackgroundColor(SELECTED_BG_COLOR);
+        requireView().findViewById(iconId).setSelected(true);
     }
+
+       // View selectedIconView = requireView().findViewById(iconId);
+       // selectedIconView.setBackgroundColor(SELECTED_BG_COLOR);
+
+
+    private void clearIconSelections() {
+        iconHappy.setSelected(false);
+        iconSad.setSelected(false);
+        iconPressured.setSelected(false);
+        iconAngry.setSelected(false);
+    }
+
 
     /**
      * Handles the Save button press by validating inputs and showing a confirmation dialog.
