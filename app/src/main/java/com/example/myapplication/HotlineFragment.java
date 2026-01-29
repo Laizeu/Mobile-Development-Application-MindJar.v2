@@ -14,50 +14,95 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
+/**
+ * HotlineFragment provides quick access to crisis support contacts.
+ *
+ * The user can tap:
+ * - an "email/message" icon to open the SMS app with a pre-filled message, or
+ * - a "phone" icon to open the dialer with a hotline number.
+ *
+ * Note: These actions open external apps (Messaging or Dialer), so intents are used.
+ */
 public class HotlineFragment extends Fragment implements View.OnClickListener {
 
-    public HotlineFragment() { }
+    // Hotline numbers used by the icons in this screen.
+    private static final String HOTLINE_1 = "180018881553";
+    private static final String HOTLINE_2 = "09188784673";
+    private static final String HOTLINE_3 = "09228938944";
 
-    @Override
-    public void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
+    // Default message that is pre-filled when the user opens the SMS app.
+    private static final String DEFAULT_SMS_BODY = "Please help me.";
+
+    // Message (SMS) icons.
+    private ImageView messageIcon1;
+    private ImageView messageIcon2;
+    private ImageView messageIcon3;
+
+    // Phone (dial) icons.
+    private ImageView phoneIcon1;
+    private ImageView phoneIcon2;
+    private ImageView phoneIcon3;
+
+    /**
+     * Required empty public constructor.
+     * The Android system uses this when recreating the fragment.
+     */
+    public HotlineFragment() {
+        // No initialization is needed here.
     }
 
-    private ImageView email1, email2, email3, phone1, phone2, phone3;
     @SuppressLint("MissingInflatedId")
     @Override
-    public @NonNull View onCreateView(@NonNull LayoutInflater inflater,
-                                      @Nullable ViewGroup container,
-                                      @Nullable Bundle savedInstanceState) {
+    public @NonNull View onCreateView(
+            @NonNull LayoutInflater inflater,
+            @Nullable ViewGroup container,
+            @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_hotline, container, false);
-
-        email1 = view.findViewById(R.id.imageEmail);
-        email2 = view.findViewById(R.id.imageEmail2);
-        email3 = view.findViewById(R.id.imageEmail3);
-        phone1 = view.findViewById(R.id.imagePhone);
-        phone2 = view.findViewById(R.id.imagePhone2);
-        phone3 = view.findViewById(R.id.imagePhone3);
-
-        email1.setOnClickListener(this);
-        email2.setOnClickListener(this);
-        email3.setOnClickListener(this);
-        phone1.setOnClickListener(this);
-        phone2.setOnClickListener(this);
-        phone3.setOnClickListener(this);
+        bindViews(view);
+        setClickListeners();
 
         return view;
     }
 
+    /**
+     * Finds and assigns the views from the fragment layout.
+     */
+    private void bindViews(@NonNull View view) {
+        messageIcon1 = view.findViewById(R.id.imageEmail);
+        messageIcon2 = view.findViewById(R.id.imageEmail2);
+        messageIcon3 = view.findViewById(R.id.imageEmail3);
+        phoneIcon1 = view.findViewById(R.id.imagePhone);
+        phoneIcon2= view.findViewById(R.id.imagePhone2);
+        phoneIcon3= view.findViewById(R.id.imagePhone3);
+    }
+
+
+    /**
+     * Sets click listeners for all message and phone icons.
+     */
+    private void setClickListeners() {
+        messageIcon1.setOnClickListener(this);
+        messageIcon2.setOnClickListener(this);
+        messageIcon3.setOnClickListener(this);
+
+        phoneIcon1.setOnClickListener(this);
+        phoneIcon2.setOnClickListener(this);
+        phoneIcon3.setOnClickListener(this);
+    }
+
     @Override
     public void onClick(View v) {
-
         int id = v.getId();
+
+            // Message icons open the user's SMS app.
         if(id == R.id.imageEmail){
-            openSMSApp("1800-1888-1553");
+            openSMSApp("180018881553");
         }else if(id == R.id.imageEmail2){
             openSMSApp("09188784673");
         }else if(id == R.id.imageEmail3){
             openSMSApp("09228938944");
+
+            // Phone icons open the device dialer.
         }else if(id == R.id.imagePhone){
             openDialer("1800-1888-1553");
         }else if(id == R.id.imagePhone2){
@@ -67,11 +112,18 @@ public class HotlineFragment extends Fragment implements View.OnClickListener {
         }
 
     }
+
+    /**
+     * Opens the user's messaging app with a pre-filled phone number and message body.
+     * This uses ACTION_SENDTO so only messaging apps can handle the intent.
+     */
     private void openSMSApp(String phoneNumber) {
         try {
-            // Use ACTION_SEND TO with sms to: URI (this ensures only SMS apps handle it)
+            Uri smsUri = Uri.parse("smsto:" + phoneNumber);
+
+            // Use ACTION_SEND TO with smsto: URI (this ensures only SMS apps handle it)
             Intent intent = new Intent(Intent.ACTION_SENDTO);
-            intent.setData(Uri.parse("sms to:" + phoneNumber)); // "sms to:" is required (NOT "sms:")
+            intent.setData(Uri.parse("smsto:" + phoneNumber)); // "smsto:"  is the recommended scheme for SMS intents.
             intent.putExtra("sms_body", "Please help me.");
 
             if (intent.resolveActivity(requireActivity().getPackageManager()) != null) {
@@ -84,8 +136,13 @@ public class HotlineFragment extends Fragment implements View.OnClickListener {
         }
     }
 
+    /**
+     * Opens the phone dialer with the provided number.
+     * This uses ACTION_DIAL, which does not require call permissions.
+     */
     private void openDialer(String phoneNumber) {
         try {
+            Uri telUri = Uri.parse("tel:" + phoneNumber);
             Intent intent = new Intent(Intent.ACTION_DIAL);
             intent.setData(Uri.parse("tel:" + phoneNumber)); // "tel:" is the correct scheme
             startActivity(intent);
