@@ -19,6 +19,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
+import java.util.regex.Pattern;
 
 /**
  * MainActivity handles the login screen UI and validation logic.
@@ -48,6 +49,17 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private static final String TEST_EMAIL = "test@gmail.com";
     private static final String TEST_PASSWORD = "Password1!";
 
+    /**
+     * Password rules:
+     * - Minimum 8 characters
+     * - At least 1 uppercase letter
+     * - At least 1 lowercase letter
+     * - At least 1 number
+     * - At least 1 special character from the allowed set
+     */
+    private static final Pattern PASSWORD_PATTERN = Pattern.compile(
+            "^(?=.*[A-Z])(?=.*[a-z])(?=.*\\d)(?=.*[@$!%*#?&])[A-Za-z\\d@$!%*#?&]{8,}$"
+    );
 
     @SuppressLint("MissingInflatedId")
     @Override
@@ -112,6 +124,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             }
         });
     }
+
     @Override
     public void onClick(View v) {
         if (v.getId() == R.id.button) {
@@ -144,32 +157,40 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         String email = getTrimmedText(editEmail);
         String password = getTrimmedText(editPassword);
 
-        // Validate inputs again on button click to ensure final correctness.
-        boolean emailOk = isEmailValid(email);
+        // Build error messages for each field so UI updates are consistent.
+        String emailError = getEmailErrorMessage(email);
         String passwordError = getPasswordErrorMessage(password);
 
-        // Show helper text for email field.
-        if (!emailOk) {
-            emailContainer.setHelperText("Invalid email address");
-        } else {
-            emailContainer.setHelperText(null);
-        }
-
-        // Show helper text for password field.
+        // Show helper text for both fields.
+        emailContainer.setHelperText(emailError);
         passwordContainer.setHelperText(passwordError);
 
         // Stop if any validation fails.
-        if (!emailOk || passwordError != null) {
+        if (emailError != null || passwordError != null) {
             Toast.makeText(this, "Please fix the highlighted fields.", Toast.LENGTH_LONG).show();
             return;
         }
 
-        // If validation passes, check credentials (demo-only logic).
+        // For demo-only credential check.
         if (email.equals(TEST_EMAIL) && password.equals(TEST_PASSWORD)) {
             openDashboard();
         } else {
             Toast.makeText(this, "Incorrect Credentials!", Toast.LENGTH_LONG).show();
         }
+    }
+
+    private String getEmailErrorMessage(String email) {
+        String value = email == null ? "" : email.trim();
+
+        if (value.isEmpty()) {
+            return "Required";
+        }
+
+        if (!Patterns.EMAIL_ADDRESS.matcher(value).matches()) {
+            return "Invalid email address";
+        }
+
+        return null; // Valid email
     }
 
     /**
@@ -187,7 +208,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         startActivity(toDashboardPage);
     }
 
+
     /**
+     * EMAIL VALIDATION
      * Validates the email field while typing and shows helpful feedback.
      */
     private void validateEmailLive(String email) {
@@ -198,11 +221,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             return;
         }
 
-        if (!isEmailValid(email)) {
-            emailContainer.setHelperText("Invalid email address");
-        } else {
-            emailContainer.setHelperText(null);
-        }
+        emailContainer.setHelperText(
+                isEmailValid(email) ? null : "Invalid email address"
+        );
     }
 
     /**
@@ -212,12 +233,15 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         return Patterns.EMAIL_ADDRESS.matcher(email).matches();
     }
 
+
+
     /**
+     * PASSWORD VALIDATION
+     *
      * Validates the password field while typing and shows helper messages.
      */
     private void validatePasswordLive(String password) {
-        String message = getPasswordErrorMessage(password);
-        passwordContainer.setHelperText(message);
+        passwordContainer.setHelperText(getPasswordErrorMessage(password));
     }
 
     /**
@@ -226,44 +250,25 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
      * <p>Rules:
      * - Must not be empty
      * - Length must be 8 to 16 characters
-     * - Must include: uppercase, lowercase, number, and symbol</p>
+     * - Must include uppercase, lowercase, number, and special character</p>
      */
     private String getPasswordErrorMessage(String password) {
-        String trimmed = password.trim();
+        String pwd = password == null ? "" : password.trim();
 
-        if (trimmed.isEmpty()) return "Password cannot be empty";
 
-        int length = password.length();
-        if (length < 8) return "Must be at least 8 characters";
-        if (length > 16) return "Must be at most 16 characters";
-
-        boolean hasUppercase = false;
-        boolean hasLowercase = false;
-        boolean hasDigit = false;
-        boolean hasSymbol = false;
-
-        for (int i = 0; i < password.length(); i++) {
-            char c = password.charAt(i);
-
-            if (Character.isUpperCase(c)) {
-                hasUppercase = true;
-            } else if (Character.isLowerCase(c)) {
-                hasLowercase = true;
-            } else if (Character.isDigit(c)) {
-                hasDigit = true;
-            } else if (!Character.isWhitespace(c)) {
-                // Any non-whitespace, non-letter, non-digit counts as a symbol for this rule.
-                hasSymbol = true;
-            }
+        if (pwd.isEmpty()) {
+            return "Password cannot be empty";
         }
 
-        if (!hasUppercase) return "Must include at least 1 uppercase letter (A–Z)";
-        if (!hasLowercase) return "Must include at least 1 lowercase letter (a–z)";
-        if (!hasDigit) return "Must include at least 1 number (0–9)";
-        if (!hasSymbol) return "Must include at least 1 symbol (e.g., !@#$...)";
+        if (pwd.length() < 8) {
+            return "Password must be at least 8 characters";
+        }
 
-        // Returning null means the password passed all checks.
-        return null;
+        if (!PASSWORD_PATTERN.matcher(pwd).matches()) {
+            return "Password must include uppercase, lowercase, number, and special character";
+        }
+
+        return null; // Valid password
     }
 
     /**
