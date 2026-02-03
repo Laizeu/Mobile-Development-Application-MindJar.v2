@@ -164,12 +164,36 @@
 
         <!-- Remember me check box -->
 
-        <CheckBox
-            android:id="@+id/checkBox"
-            android:layout_width="wrap_content"
+        <LinearLayout
+            android:id="@+id/rowRememberForgot"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="6dp"
-            android:text="@string/login_remember_me" />
+            android:orientation="horizontal"
+            android:gravity="center_vertical">
+
+            <CheckBox
+                android:id="@+id/checkBox"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/login_remember_me" />
+
+            <Space
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1" />
+
+            <TextView
+                android:id="@+id/textForgotPassword"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Forgot Password?"
+                android:textStyle="italic"
+                android:textSize="14sp"
+                android:clickable="true"
+                android:focusable="true" />
+        </LinearLayout>
+
 
         <Button
             android:id="@+id/button"
@@ -178,8 +202,12 @@
             android:layout_marginTop="10dp"
             android:text="@string/login_button"
             android:backgroundTint="@color/button_green"
-            android:textAllCaps="false" />
+            android:textAllCaps="false"
+            app:layout_constraintTop_toBottomOf="@+id/rowRememberForgot"
+            />
+
     </LinearLayout>
+
 
     <!-- RIGHT: Social login (vertically centered in its column) -->
     <LinearLayout
@@ -197,13 +225,29 @@
         app:layout_constraintVertical_bias="0.5">
 
         <TextView
-            android:id="@+id/textOrRegisterWith"
+            android:id="@+id/txtSignUpLink"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="12dp"
+            android:text="Don’t have an account? Sign Up"
+            android:textSize="14sp"
+            android:textColor="#555555"
+            android:textAlignment="center"
+            android:clickable="true"
+            android:focusable="true" />
+
+
+        <TextView
+            android:id="@+id/textView7"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="10dp"
-            android:text="@string/login_or_register_with"
+            android:layout_marginTop="16dp"
+            android:text="or continue with"
             android:textSize="14sp"
-            android:textStyle="bold" />
+            app:layout_constraintStart_toStartOf="@+id/constraintVertical4"
+            app:layout_constraintTop_toBottomOf="@+id/txtSignUpLink"
+            app:layout_constraintHorizontal_bias="0.5" />
+
 
         <LinearLayout
             android:layout_width="wrap_content"

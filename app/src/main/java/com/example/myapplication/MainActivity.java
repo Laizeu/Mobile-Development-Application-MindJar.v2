@@ -1,87 +1,78 @@
 package com.example.myapplication;
 
-import android.annotation.SuppressLint;
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
+import android.text.SpannableString;
+import android.text.Spanned;
+import android.text.TextPaint;
 import android.text.method.HideReturnsTransformationMethod;
+import android.text.method.LinkMovementMethod;
 import android.text.method.PasswordTransformationMethod;
+import android.text.style.ClickableSpan;
 import android.util.Patterns;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.Toast;
+import android.widget.TextView;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
-import java.util.regex.Pattern;
 
 /**
- * MainActivity handles the login screen UI and validation logic.
+ * MainActivity handles the Login screen UI and validation logic.
  *
- * <p>This screen supports:
- * 1) Live validation while typing for email and password,
- * 2) Show/Hide password using a checkbox, and
- * 3) Final validation when the user taps the Login button.</p>
+ * <p>Login validation rules (best practice):
+ * <ul>
+ *   <li>Email: Required + valid email format</li>
+ *   <li>Password: Required only</li>
+ *   <li>On failed login: Show a generic "Invalid email or password"</li>
+ * </ul>
  *
- * <p>If the credentials match the hardcoded test account, the user is redirected
- * to the Dashboard activity.</p>
+ * <p>This keeps login simple and avoids applying sign-up password rules on login.</p>
  */
-
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
 
-    // Containers are used to show helper/error text underneath the input fields.
-    private TextInputLayout emailContainer, passwordContainer;
+    // --- UI Containers (for helper text) ---
+    private TextInputLayout emailContainer;
+    private TextInputLayout passwordContainer;
 
-    // User input fields for email and password.
-    private TextInputEditText editEmail, editPassword;
+    // --- Input Fields ---
+    private TextInputEditText editEmail;
+    private TextInputEditText editPassword;
 
+    // --- Controls ---
+    private Button btnLogin;
+    private CheckBox checkShowPassword; // currently used as show/hide toggle
 
     /**
-     * Test credentials for demonstration purposes.
-     * In a real app, this should be replaced with secure authentication.
+     * Demo-only test credentials.
+     * In a real app, credentials are verified by a backend/auth provider.
      */
     private static final String TEST_EMAIL = "test@gmail.com";
     private static final String TEST_PASSWORD = "Password1!";
 
-    /**
-     * Password rules:
-     * - Minimum 8 characters
-     * - At least 1 uppercase letter
-     * - At least 1 lowercase letter
-     * - At least 1 number
-     * - At least 1 special character from the allowed set
-     */
-    private static final Pattern PASSWORD_PATTERN = Pattern.compile(
-            "^(?=.*[A-Z])(?=.*[a-z])(?=.*\\d)(?=.*[@$!%*#?&])[A-Za-z\\d@$!%*#?&]{8,}$"
-    );
-
-    @SuppressLint("MissingInflatedId")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-        // Edge-to-edge allows content to draw behind system bars if needed.
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_main);
 
         bindViews();
         setupListeners();
         setupLiveValidation();
+        setupSignUpLink();
     }
 
-    // UI controls.
-    private Button btnLogin;
-    private CheckBox checkPassword;
-
     /**
-     * Finds and assigns all views from the layout.
-     * Keeping this in one method makes onCreate() easier to read.
+     * Binds XML views to Java fields.
      */
     private void bindViews() {
         btnLogin = findViewById(R.id.button);
@@ -92,37 +83,75 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         editEmail = findViewById(R.id.editEmail);
         editPassword = findViewById(R.id.editPassword);
 
-        checkPassword = findViewById(R.id.checkBox);
+        // NOTE: Your checkbox id is "checkBox" in XML.
+        // If it's really "Remember Me", we should rename it in XML later.
+        checkShowPassword = findViewById(R.id.checkBox);
     }
 
-
     /**
-     * Sets up click listeners for the Login button and password checkbox.
+     * Sets up click listeners for Login button and password toggle checkbox.
      */
     private void setupListeners() {
         btnLogin.setOnClickListener(this);
 
-        // This toggles password visibility while keeping the cursor at the end of the text.
-        checkPassword.setOnCheckedChangeListener((buttonView, isChecked) -> togglePasswordVisibility(isChecked));
+        if (checkShowPassword != null) {
+            checkShowPassword.setOnCheckedChangeListener(
+                    (buttonView, isChecked) -> togglePasswordVisibility(isChecked)
+            );
+        }
     }
 
     /**
-     * Adds TextWatchers so validation feedback is shown while the user types.
+     * Shows helper validation messages while user types.
      */
     private void setupLiveValidation() {
         editEmail.addTextChangedListener(new SimpleTextWatcher() {
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-                validateEmailLive(s.toString());
+                emailContainer.setHelperText(getEmailErrorMessage(s.toString()));
             }
         });
 
         editPassword.addTextChangedListener(new SimpleTextWatcher() {
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-                validatePasswordLive(s.toString());
+                passwordContainer.setHelperText(getPasswordErrorMessage(s.toString()));
             }
         });
+    }
+
+    /**
+     * Makes "Sign Up" clickable and routes to SignUpActivity.
+     */
+    private void setupSignUpLink() {
+        TextView txtSignUpLink = findViewById(R.id.txtSignUpLink);
+        if (txtSignUpLink == null) return;
+
+        String fullText = "Don’t have an account? Sign Up";
+        SpannableString spannable = new SpannableString(fullText);
+
+        String clickablePart = "Sign Up";
+        int start = fullText.indexOf(clickablePart);
+        int end = start + clickablePart.length();
+
+        ClickableSpan clickableSpan = new ClickableSpan() {
+            @Override
+            public void onClick(View widget) {
+                startActivity(new Intent(MainActivity.this, SignUpActivity.class));
+            }
+
+            @Override
+            public void updateDrawState(TextPaint ds) {
+                ds.setColor(getResources().getColor(R.color.button_green));
+                ds.setUnderlineText(true);
+                ds.setFakeBoldText(true);
+            }
+        };
+
+        spannable.setSpan(clickableSpan, start, end, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+        txtSignUpLink.setText(spannable);
+        txtSignUpLink.setMovementMethod(LinkMovementMethod.getInstance());
+        txtSignUpLink.setHighlightColor(Color.TRANSPARENT);
     }
 
     @Override
@@ -133,52 +162,42 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     /**
-     * Shows or hides the password text depending on the checkbox state.
-     * This improves usability and accessibility on the login screen.
-     */
-    private void togglePasswordVisibility(boolean showPassword) {
-        if (showPassword) {
-            editPassword.setTransformationMethod(HideReturnsTransformationMethod.getInstance());
-        } else {
-            editPassword.setTransformationMethod(PasswordTransformationMethod.getInstance());
-        }
-
-        // This ensures the cursor stays at the end after toggling visibility.
-        if (editPassword.getText() != null) {
-            editPassword.setSelection(editPassword.getText().length());
-        }
-    }
-
-    /**
-     * Validates inputs and navigates to Dashboard if credentials are correct.
-     * If inputs are invalid, the method shows helper text and prevents login.
+     * Attempts login by validating inputs and then checking credentials.
      */
     private void attemptLogin() {
         String email = getTrimmedText(editEmail);
         String password = getTrimmedText(editPassword);
 
-        // Build error messages for each field so UI updates are consistent.
+        // Field-level validation
         String emailError = getEmailErrorMessage(email);
         String passwordError = getPasswordErrorMessage(password);
 
-        // Show helper text for both fields.
+        // Show helper texts
         emailContainer.setHelperText(emailError);
         passwordContainer.setHelperText(passwordError);
 
-        // Stop if any validation fails.
+        // Stop if validation fails
         if (emailError != null || passwordError != null) {
             Toast.makeText(this, "Please fix the highlighted fields.", Toast.LENGTH_LONG).show();
             return;
         }
 
-        // For demo-only credential check.
+        // Demo-only credential check
         if (email.equals(TEST_EMAIL) && password.equals(TEST_PASSWORD)) {
             openDashboard();
         } else {
-            Toast.makeText(this, "Incorrect Credentials!", Toast.LENGTH_LONG).show();
+            // Generic message: do not reveal which is wrong (security best practice)
+            Toast.makeText(this, "Invalid email or password", Toast.LENGTH_LONG).show();
         }
     }
 
+    /**
+     * Email validation for login:
+     * - Required
+     * - Valid email format
+     *
+     * @return error message or null if valid
+     */
     private String getEmailErrorMessage(String email) {
         String value = email == null ? "" : email.trim();
 
@@ -187,102 +206,65 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         }
 
         if (!Patterns.EMAIL_ADDRESS.matcher(value).matches()) {
-            return "Invalid email address";
+            return "Invalid email";
         }
 
-        return null; // Valid email
+        return null;
     }
 
     /**
-     * Returns the trimmed text from a TextInputEditText safely.
-     */
-    private String getTrimmedText(TextInputEditText input) {
-        return input.getText() == null ? "" : input.getText().toString().trim();
-    }
-
-    /**
-     * Opens the Dashboard screen after a successful login.
-     */
-    private void openDashboard() {
-        Intent toDashboardPage = new Intent(MainActivity.this, Dashboard.class);
-        startActivity(toDashboardPage);
-    }
-
-
-    /**
-     * EMAIL VALIDATION
-     * Validates the email field while typing and shows helpful feedback.
-     */
-    private void validateEmailLive(String email) {
-        email = email.trim();
-
-        if (TextUtils.isEmpty(email)) {
-            emailContainer.setHelperText("Required");
-            return;
-        }
-
-        emailContainer.setHelperText(
-                isEmailValid(email) ? null : "Invalid email address"
-        );
-    }
-
-    /**
-     * Checks if an email matches Android's built-in email pattern.
-     */
-    private boolean isEmailValid(String email) {
-        return Patterns.EMAIL_ADDRESS.matcher(email).matches();
-    }
-
-
-
-    /**
-     * PASSWORD VALIDATION
+     * Password validation for login (minimal):
+     * - Required only
      *
-     * Validates the password field while typing and shows helper messages.
-     */
-    private void validatePasswordLive(String password) {
-        passwordContainer.setHelperText(getPasswordErrorMessage(password));
-    }
-
-    /**
-     * Returns a readable password error message, or null if the password is valid.
-     *
-     * <p>Rules:
-     * - Must not be empty
-     * - Length must be 8 to 16 characters
-     * - Must include uppercase, lowercase, number, and special character</p>
+     * @return error message or null if valid
      */
     private String getPasswordErrorMessage(String password) {
-        String pwd = password == null ? "" : password.trim();
+        String value = password == null ? "" : password.trim();
 
-
-        if (pwd.isEmpty()) {
-            return "Password cannot be empty";
+        if (value.isEmpty()) {
+            return "Password required";
         }
 
-        if (pwd.length() < 8) {
-            return "Password must be at least 8 characters";
-        }
-
-        if (!PASSWORD_PATTERN.matcher(pwd).matches()) {
-            return "Password must include uppercase, lowercase, number, and special character";
-        }
-
-        return null; // Valid password
+        return null;
     }
 
     /**
-     * SimpleTextWatcher reduces boilerplate by allowing subclasses to override only what they need.
+     * Toggles password visibility (used by checkbox).
+     */
+    private void togglePasswordVisibility(boolean showPassword) {
+        if (showPassword) {
+            editPassword.setTransformationMethod(HideReturnsTransformationMethod.getInstance());
+        } else {
+            editPassword.setTransformationMethod(PasswordTransformationMethod.getInstance());
+        }
+
+        // Keep cursor at end
+        if (editPassword.getText() != null) {
+            editPassword.setSelection(editPassword.getText().length());
+        }
+    }
+
+    /**
+     * Opens the Dashboard screen after successful login.
+     */
+    private void openDashboard() {
+        startActivity(new Intent(MainActivity.this, Dashboard.class));
+    }
+
+    /**
+     * Returns trimmed text safely.
+     */
+    private String getTrimmedText(TextInputEditText input) {
+        return (input.getText() == null) ? "" : input.getText().toString().trim();
+    }
+
+    /**
+     * SimpleTextWatcher reduces boilerplate by letting you override only needed methods.
      */
     public abstract static class SimpleTextWatcher implements TextWatcher {
         @Override
-        public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-            // No action needed before text changes.
-        }
-
+        public void beforeTextChanged(CharSequence s, int start, int count, int after) { }
         @Override
-        public void afterTextChanged(Editable s) {
-            // No action needed after text changes.
-        }
+        public void afterTextChanged(Editable s) { }
     }
 }

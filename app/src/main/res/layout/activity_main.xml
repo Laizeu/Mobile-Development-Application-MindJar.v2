@@ -67,6 +67,17 @@
         android:orientation="horizontal"
         app:layout_constraintGuide_percent="0.83" />
 
+    <!-- Header icon MindJar Image -->
+
+    <ImageView
+        android:id="@+id/imageView3"
+        android:layout_width="133dp"
+        android:layout_height="145dp"
+        app:layout_constraintStart_toStartOf="@+id/constraintVertical1"
+        app:layout_constraintTop_toTopOf="@+id/constraintHorizontal1"
+        app:srcCompat="@drawable/jar_icon"
+        tools:ignore="MissingConstraints" />
+
     <!--    Text View -->
 
     <TextView
@@ -100,10 +111,8 @@
         tools:ignore="MissingConstraints" />
 
 
-    <!-- Input Validation edited by Laiza-->
+    <!-- Input Validation edited by Laiza Text Input of Email -->
 
-
-    <!-- Text Input of Email -->
     <TextView
         android:id="@+id/inputEmail"
         android:layout_width="0dp"
@@ -183,17 +192,38 @@
             android:lines="1" />
     </com.google.android.material.textfield.TextInputLayout>
 
-
-    <!-- Remember me check box -->
-    <CheckBox
-        android:id="@+id/checkBox"
+    <LinearLayout
+        android:id="@+id/rowRememberForgot"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:text="Remember Me"
-        app:layout_constraintEnd_toStartOf="@+id/constraintVertical2"
+        android:layout_marginTop="8dp"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
         app:layout_constraintStart_toStartOf="@+id/constraintVertical1"
-        app:layout_constraintTop_toBottomOf="@+id/passwordContainer"
-        tools:ignore="MissingConstraints" />
+        app:layout_constraintEnd_toStartOf="@+id/constraintVertical2"
+        app:layout_constraintTop_toBottomOf="@+id/passwordContainer">
+
+        <CheckBox
+            android:id="@+id/checkBox"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Remember Me" />
+
+        <Space
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1" />
+
+        <TextView
+            android:id="@+id/textForgotPassword"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Forgot Password?"
+            android:textStyle="italic"
+            android:textSize="14sp"
+            android:clickable="true"
+            android:focusable="true" />
+    </LinearLayout>
 
     <!-- Login Button -->
 
@@ -209,78 +239,75 @@
         app:layout_constraintEnd_toStartOf="@+id/constraintVertical2"
         app:layout_constraintHorizontal_bias="0.494"
         app:layout_constraintStart_toStartOf="@+id/constraintVertical1"
-        app:layout_constraintTop_toBottomOf="@+id/checkBox"
+        app:layout_constraintTop_toBottomOf="@+id/rowRememberForgot"
         tools:ignore="MissingConstraints" />
 
-    <!-- Forgot Password edited by Laiza-->
+    <!-- Sign Up Link -->
 
     <TextView
-        android:id="@+id/textForgotPassword"
+        android:id="@+id/txtSignUpLink"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
-        android:text="Forgot Password?"
-        android:textStyle="italic"
-        app:layout_constraintEnd_toStartOf="@+id/constraintVertical2"
-        app:layout_constraintHorizontal_bias="0.505"
-        app:layout_constraintStart_toStartOf="@+id/constraintVertical1"
+        android:layout_marginTop="12dp"
+        android:text="Don’t have an account? Sign Up"
+        android:textSize="14sp"
+        android:textColor="#555555"
+        android:clickable="true"
+        android:focusable="true"
         app:layout_constraintTop_toBottomOf="@+id/button"
-        tools:ignore="MissingConstraints" />
+        app:layout_constraintStart_toStartOf="@+id/constraintVertical1"
+        app:layout_constraintEnd_toStartOf="@+id/constraintVertical2"
+        app:layout_constraintHorizontal_bias="0.5"/>
 
-    <!-- Or register with edited by Laiza-->
-
-    <TextView
-        android:id="@+id/textView7"
+    <LinearLayout
+        android:id="@+id/socialGroup"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
-        android:text="Or Register With"
+        android:layout_marginTop="56dp"
+        android:gravity="center"
+        android:orientation="vertical"
         app:layout_constraintEnd_toStartOf="@+id/constraintVertical2"
-        app:layout_constraintHorizontal_bias="0.513"
         app:layout_constraintStart_toStartOf="@+id/constraintVertical1"
-        app:layout_constraintTop_toBottomOf="@+id/textForgotPassword" />
+        app:layout_constraintTop_toBottomOf="@+id/txtSignUpLink">
 
-    <ImageView
-        android:id="@+id/imageView3"
-        android:layout_width="133dp"
-        android:layout_height="145dp"
-        app:layout_constraintStart_toStartOf="@+id/constraintVertical1"
-        app:layout_constraintTop_toTopOf="@+id/constraintHorizontal1"
-        app:srcCompat="@drawable/jar_icon"
-        tools:ignore="MissingConstraints" />
+        <!-- Or continue with edited by Laiza-->
 
-    <ImageView
-        android:id="@+id/iconTwitter"
-        android:layout_width="68dp"
-        android:layout_height="64dp"
-        app:layout_constraintBottom_toTopOf="@+id/constraintHorizontal2"
-        app:layout_constraintEnd_toStartOf="@+id/constraintVertical4"
-        app:layout_constraintStart_toStartOf="@+id/constraintVertical3"
-        app:layout_constraintTop_toTopOf="@+id/constraintHorizontal4"
-        app:srcCompat="@drawable/twitter_circle"
-        tools:ignore="MissingConstraints" />
+        <TextView
+            android:id="@+id/textView7"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"
+            android:text="or continue with"
+            android:textSize="14sp" />
 
-    <ImageView
-        android:id="@+id/iconGoogle"
-        android:layout_width="68dp"
-        android:layout_height="64dp"
-        app:layout_constraintBottom_toTopOf="@+id/constraintHorizontal2"
-        app:layout_constraintEnd_toStartOf="@+id/constraintVertical3"
-        app:layout_constraintStart_toStartOf="@+id/constraintVertical1"
-        app:layout_constraintTop_toTopOf="@+id/constraintHorizontal4"
-        app:srcCompat="@drawable/google"
-        tools:ignore="MissingConstraints" />
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:orientation="horizontal">
 
-    <ImageView
-        android:id="@+id/iconFacebook"
-        android:layout_width="68dp"
-        android:layout_height="64dp"
-        app:layout_constraintBottom_toTopOf="@+id/constraintHorizontal2"
-        app:layout_constraintEnd_toStartOf="@+id/constraintVertical2"
-        app:layout_constraintStart_toStartOf="@+id/constraintVertical4"
-        app:layout_constraintTop_toTopOf="@+id/constraintHorizontal4"
-        app:srcCompat="@drawable/facebook"
-        tools:ignore="MissingConstraints" />
+            <ImageView
+                android:id="@+id/iconGoogle"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:layout_margin="6dp"
+                android:src="@drawable/google" />
+
+            <ImageView
+                android:id="@+id/iconFacebook"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:layout_margin="6dp"
+                android:src="@drawable/facebook" />
+
+            <ImageView
+                android:id="@+id/iconTwitter"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:layout_margin="6dp"
+                android:src="@drawable/twitter_circle" />
+        </LinearLayout>
+    </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
 
