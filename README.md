@@ -43,15 +43,15 @@ MindJar/
 │   │   │   ├── java/com/example
 │   │   │   │   ├── myapplication/
 │   │   │   │   │   ├── LoginActivity.java
-│   │   │   │   │   └── SignUpActivity.java
-|   |   |   |   |   └── DashboardActivity.java
-|   |   |   |   |   └── HomeFragment.java
-|   |   |   |   |   └── RealizationFragment.java
-|   |   |   |   |   └── HopeFragment.java
-|   |   |   |   |   └── VideosFragment.java
-|   |   |   |   |   └── HotlineFragment.java
-|   |   |   |   |   └── MyJourneyFragment.java
-|   |   |   |   |   └── EntryDetails.java
+│   │   │   │   │   ├── SignUpActivity.java
+│   │   │   │   │   ├──  DashboardActivity.java
+│   │   │   │   │   ├── HomeFragment.java
+│   │   │   │   │   ├──  RealizationFragment.java
+│   │   │   │   │   ├── HopeFragment.java
+│   │   │   │   │   ├──  VideosFragment.java
+│   │   │   │   │   ├── HotlineFragment.java
+│   │   │   │   │   ├── MyJourneyFragment.java
+│   │   │   │   │   └── EntryDetails.java
 │   │   │   │   │
 │   │   │   │   ├── fragments/
 │   │   │   │   │   ├── HomeFragment.java
