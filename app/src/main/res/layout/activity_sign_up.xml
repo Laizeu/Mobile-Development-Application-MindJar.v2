@@ -195,7 +195,7 @@
             android:layout_marginBottom="20dp"
             android:text="Already have an account? Login"
             android:textAlignment="center"
-            android:textColor="#555555"
+            android:textColor="@color/gray"
             android:textSize="14sp"
             android:clickable="true"
             android:focusable="false"/>
