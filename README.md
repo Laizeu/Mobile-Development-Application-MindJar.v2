@@ -3,7 +3,7 @@ MindJar is a mobile application designed to help users reflect on their emotions
 The app allows users to log in, select how they are feeling, and write down their thoughts in a simple and organized way. 
 It focuses on promoting self-awareness through a clean interface and easy navigation. 
 
-##Features
+## Features
 - Login screen with email and password validation
 - Real-time input validation with helper text and toast messages
 - Emotion selection on the dashboard
@@ -13,14 +13,14 @@ It focuses on promoting self-awareness through a clean interface and easy naviga
 - Back stack handling for smooth navigation flow
 - Simple and user-friendly UI design
 
-##Tech Stack
+## Tech Stack
 - Platform: Android
 - Language: Java
 - UI Design: XML (ConstraintLayout)
 - IDE: Android Studio
 - Design Components: Material Design Components
 
-##Setup & Run
+## Setup & Run
 1. Follow these steps to run the project locally:
 2. Clone or download the project repository
 3. Open Android Studio
