@@ -52,14 +52,7 @@ MindJar/
 │   │   │   │   │   ├── HotlineFragment.java
 │   │   │   │   │   ├── MyJourneyFragment.java
 │   │   │   │   │   └── EntryDetails.java
-│   │   │   │   │
-│   │   │   │   ├── fragments/
-│   │   │   │   │   ├── HomeFragment.java
-│   │   │   │   │   ├── MyJourneyFragment.java
-│   │   │   │   │   └── RealizationFragment.java
-│   │   │   │   │
-│   │   │   │   └── utils/
-│   │   │   │       └── ValidationUtils.java
+│   │   │   │   
 │   │   │   │
 │   │   │   ├── res/
 │   │   │   │   ├── layout/
