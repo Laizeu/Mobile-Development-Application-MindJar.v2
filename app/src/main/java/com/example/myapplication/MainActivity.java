@@ -25,6 +25,10 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
+import com.example.myapplication.room.AppExecutors;
+import com.example.myapplication.room.AuthRepository;
+import com.example.myapplication.room.SessionManager;
+import com.example.myapplication.room.UserEntity;
 
 /**
  * MainActivity handles the Login screen UI and validation logic.
@@ -69,6 +73,14 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         setupListeners();
         setupLiveValidation();
         setupSignUpLink();
+
+//        // keeping the user logged in across app restarts.
+//        SessionManager session = new SessionManager(this);
+//        if (session.getLoggedInUserId() > 0) {
+//            openDashboard();
+//            finish();
+//            return;
+//        }
     }
 
     /**
@@ -267,4 +279,35 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         @Override
         public void afterTextChanged(Editable s) { }
     }
+
+    private void tryLogin(String email, String password) {
+        AuthRepository repo = new AuthRepository(this);
+        SessionManager session = new SessionManager(this);
+
+        AppExecutors.db().execute(() -> {
+            UserEntity user = repo.getUserByEmail(email);
+
+            boolean ok = false;
+            long userId = -1;
+
+            if (user != null) {
+                ok = repo.verifyPassword(password, user.passwordHash);
+                if (ok) userId = user.id;
+            }
+
+            boolean finalOk = ok;
+            long finalUserId = userId;
+
+            runOnUiThread(() -> {
+                if (finalOk) {
+                    session.setLoggedInUserId(finalUserId);
+                    openDashboard();
+                } else {
+                    Toast.makeText(this, "Invalid email or password", Toast.LENGTH_LONG).show();
+                }
+            });
+        });
+    }
+
 }
+

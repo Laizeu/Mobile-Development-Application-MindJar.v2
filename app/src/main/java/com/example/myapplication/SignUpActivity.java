@@ -14,6 +14,9 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
+import com.example.myapplication.room.AppExecutors;
+import com.example.myapplication.room.AuthRepository;
+import com.example.myapplication.room.SessionManager;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -314,6 +317,31 @@ public class SignUpActivity extends AppCompatActivity {
     private boolean containsSpecial(String s) {
         // Match the same special set you use in your regex
         return s.matches(".*[@$!%*#?&].*");
+    }
+
+    private void handleSignup(String fullName, String email, String password) {
+        AuthRepository repo = new AuthRepository(this);
+        SessionManager session = new SessionManager(this);
+
+        AppExecutors.db().execute(() -> {
+            boolean exists = repo.emailExists(email);
+            if (exists) {
+                runOnUiThread(() -> {
+                    // show error in your TextInputLayout helper text or Toast
+                    Toast.makeText(this, "Email already exists.", Toast.LENGTH_LONG).show();
+                });
+                return;
+            }
+
+            long newUserId = repo.createUser(fullName, email, password);
+            session.setLoggedInUserId(newUserId);
+
+            runOnUiThread(() -> {
+                Toast.makeText(this, "Account created successfully!", Toast.LENGTH_LONG).show();
+                startActivity(new Intent(SignUpActivity.this, Dashboard.class));
+                finish();
+            });
+        });
     }
 
 }

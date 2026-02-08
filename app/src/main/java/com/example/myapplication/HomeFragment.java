@@ -16,6 +16,10 @@ import androidx.fragment.app.Fragment;
 
 import com.google.android.material.textfield.TextInputEditText;
 
+import com.example.myapplication.room.AppExecutors;
+import com.example.myapplication.room.JournalRepository;
+import com.example.myapplication.room.SessionManager;
+
 /**
  * HomeFragment collects the user's current emotion and a short text description.
  *
@@ -227,4 +231,23 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
     private void showToast(@NonNull String message) {
         Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show();
     }
+
+    private void persistHomeEntry(String selectedEmotion, String description) {
+        JournalRepository repo = new JournalRepository(requireContext());
+        SessionManager session = new SessionManager(requireContext());
+        long userId = session.getLoggedInUserId();
+
+        if (userId <= 0) {
+            Toast.makeText(requireContext(), "Please log in again.", Toast.LENGTH_LONG).show();
+            return;
+        }
+
+        AppExecutors.db().execute(() -> {
+            repo.addEntry(userId, selectedEmotion, description);
+            requireActivity().runOnUiThread(() ->
+                    Toast.makeText(requireContext(), "Submitted successfully!", Toast.LENGTH_LONG).show()
+            );
+        });
+    }
+
 }
