@@ -238,7 +238,8 @@
                 android:minLines="4"
                 android:gravity="top|start"
                 android:inputType="textMultiLine"
-                android:hint="@string/home_feeling_hint" />
+                android:hint="@string/home_feeling_hint"
+                 />
         </com.google.android.material.textfield.TextInputLayout>
 
         <LinearLayout
