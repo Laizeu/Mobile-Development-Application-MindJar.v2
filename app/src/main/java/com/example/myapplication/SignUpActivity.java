@@ -202,13 +202,47 @@ public class SignUpActivity extends AppCompatActivity {
                 return;
             }
 
-            Toast.makeText(this, "Account created successfully!", Toast.LENGTH_LONG).show();
-
+            else {
+                handleSignup(name, email, pass); // handle signup here
+                Toast.makeText(this, "Account created successfully!", Toast.LENGTH_LONG).show();
+            }
             // After sign up, go back to login explicitly
             startActivity(new Intent(SignUpActivity.this, MainActivity.class));
             finish();
         });
     }
+
+    private void handleSignup(String fullName, String email, String password) {
+        AuthRepository repo = new AuthRepository(this);
+        SessionManager session = new SessionManager(this);
+
+        AppExecutors.db().execute(() -> {
+
+            // 1) prevent duplicates by checking if email already in the database
+            boolean exists = repo.emailExists(email);
+
+            if (exists) {
+                runOnUiThread(() -> {
+                    // show error in your TextInputLayout helper text or Toast
+                    Toast.makeText(this, "Email already exists.", Toast.LENGTH_LONG).show();
+                });
+                return;
+            }
+            // 2) insert new user (repo should hash internally)
+            long newUserId = repo.createUser(fullName, email, password);
+
+            // 3) set session
+            session.setLoggedInUserId(newUserId);
+
+            // 4) move forward
+            runOnUiThread(() -> {
+                Toast.makeText(this, "Account created successfully!", Toast.LENGTH_LONG).show();
+                startActivity(new Intent(SignUpActivity.this, Dashboard.class));
+                finish();
+            });
+        });
+    }
+
 
     // ---------------- Validation Methods ----------------
 
@@ -319,29 +353,5 @@ public class SignUpActivity extends AppCompatActivity {
         return s.matches(".*[@$!%*#?&].*");
     }
 
-    private void handleSignup(String fullName, String email, String password) {
-        AuthRepository repo = new AuthRepository(this);
-        SessionManager session = new SessionManager(this);
-
-        AppExecutors.db().execute(() -> {
-            boolean exists = repo.emailExists(email);
-            if (exists) {
-                runOnUiThread(() -> {
-                    // show error in your TextInputLayout helper text or Toast
-                    Toast.makeText(this, "Email already exists.", Toast.LENGTH_LONG).show();
-                });
-                return;
-            }
-
-            long newUserId = repo.createUser(fullName, email, password);
-            session.setLoggedInUserId(newUserId);
-
-            runOnUiThread(() -> {
-                Toast.makeText(this, "Account created successfully!", Toast.LENGTH_LONG).show();
-                startActivity(new Intent(SignUpActivity.this, Dashboard.class));
-                finish();
-            });
-        });
-    }
 
 }

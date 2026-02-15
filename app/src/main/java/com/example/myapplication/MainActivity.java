@@ -56,12 +56,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private Button btnLogin;
     private CheckBox checkShowPassword; // currently used as show/hide toggle
 
-    /**
-     * Demo-only test credentials.
-     * In a real app, credentials are verified by a backend/auth provider.
-     */
-    private static final String TEST_EMAIL = "test@gmail.com";
-    private static final String TEST_PASSWORD = "Password1!";
+
+//    private static final String TEST_EMAIL = "test@gmail.com";
+//    private static final String TEST_PASSWORD = "Password1!";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -173,6 +170,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         }
     }
 
+
+
+
     /**
      * Attempts login by validating inputs and then checking credentials.
      */
@@ -193,14 +193,19 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             Toast.makeText(this, "Please fix the highlighted fields.", Toast.LENGTH_LONG).show();
             return;
         }
+        // Real DB-backed credential check (Room)
+        tryLogin(email, password);
 
-        // Demo-only credential check
-        if (email.equals(TEST_EMAIL) && password.equals(TEST_PASSWORD)) {
-            openDashboard();
-        } else {
-            // Generic message: do not reveal which is wrong (security best practice)
-            Toast.makeText(this, "Invalid email or password", Toast.LENGTH_LONG).show();
-        }
+
+//        // Demo-only credential check
+//        if (email.equals(TEST_EMAIL) && password.equals(TEST_PASSWORD)) {
+//            openDashboard();
+//        } else {
+//            // Generic message: do not reveal which is wrong (security best practice)
+//            Toast.makeText(this, "Invalid email or password", Toast.LENGTH_LONG).show();
+//        }
+
+
     }
 
     /**
@@ -263,10 +268,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         startActivity(new Intent(MainActivity.this, Dashboard.class));
     }
 
-    /**
-     * Returns trimmed text safely.
-     */
-    private String getTrimmedText(TextInputEditText input) {
+     private String getTrimmedText(TextInputEditText input) {
         return (input.getText() == null) ? "" : input.getText().toString().trim();
     }
 
