@@ -10,9 +10,11 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.Navigation;
+import androidx.navigation.fragment.NavHostFragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 
+
+import androidx.recyclerview.widget.RecyclerView;
 import com.example.myapplication.room.AppExecutors;
 import com.example.myapplication.room.JournalEntryEntity;
 import com.example.myapplication.room.JournalRepository;
@@ -70,7 +72,7 @@ public class MyJourneyFragment extends Fragment {
 
         // Recommended with Navigation Component:
         toolbar.setNavigationOnClickListener(v ->
-                Navigation.findNavController(v).navigateUp()
+                getParentFragmentManager().popBackStack()
         );
 
         // If you insist on FragmentManager back stack (less consistent with nav graph), keep your line instead:

@@ -4,39 +4,37 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.text.Editable;
-import android.text.TextWatcher;
 import android.text.SpannableString;
 import android.text.Spanned;
 import android.text.TextPaint;
+import android.text.TextWatcher;
 import android.text.method.LinkMovementMethod;
 import android.text.style.ClickableSpan;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
+import androidx.navigation.fragment.NavHostFragment;
+
 import com.example.myapplication.room.AppExecutors;
 import com.example.myapplication.room.AuthRepository;
 import com.example.myapplication.room.SessionManager;
-
-import androidx.appcompat.app.AppCompatActivity;
-
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
 
 import java.util.regex.Pattern;
 
 /**
- * SignUpActivity handles user registration validation.
- *
- * <p>Live validation while typing:
- * <ul>
- *   <li>Full name: required, min 2 chars, Unicode letters + spaces + hyphen + apostrophe</li>
- *   <li>Email: required + valid format</li>
- *   <li>Password: regex strong rules</li>
- *   <li>Confirm password: must match password</li>
- * </ul>
+ * SignUpFragment handles user registration validation.
+ * - Uses NavController to return to LoginFragment
  */
-public class SignUpActivity extends AppCompatActivity {
+public class SignUpFragment extends Fragment {
 
     // Containers for helper text
     private TextInputLayout nameContainer, emailContainer, passwordContainer, confirmContainer;
@@ -62,17 +60,31 @@ public class SignUpActivity extends AppCompatActivity {
 
     /**
      * Full name regex (Unicode-safe):
-     * - Allows letters like ñ, é (\\p{L})
+     * - Allows letters like ñ, é (\p{L})
      * - Allows spaces, dot, hyphen, apostrophe
      */
     private static final Pattern NAME_PATTERN = Pattern.compile("^[\\p{L} .'-]+$");
 
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_sign_up);
+    public SignUpFragment() {
+        // Required empty public constructor
+    }
 
-        bindViews();
+    @Nullable
+    @Override
+    public View onCreateView(
+            @NonNull LayoutInflater inflater,
+            @Nullable ViewGroup container,
+            @Nullable Bundle savedInstanceState
+    ) {
+
+        return inflater.inflate(R.layout.fragment_sign_up, container, false);
+    }
+
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+
+        bindViews(view);
         setupLoginClickableText();
         setupLiveValidation();
         setupCreateAccount();
@@ -81,25 +93,27 @@ public class SignUpActivity extends AppCompatActivity {
     /**
      * Binds all views from XML.
      */
-    private void bindViews() {
-        nameContainer = findViewById(R.id.nameContainer);
-        emailContainer = findViewById(R.id.emailContainer);
-        passwordContainer = findViewById(R.id.passwordContainer);
-        confirmContainer = findViewById(R.id.confirmContainer);
+    private void bindViews(@NonNull View root) {
+        nameContainer = root.findViewById(R.id.nameContainer);
+        emailContainer = root.findViewById(R.id.emailContainer);
+        passwordContainer = root.findViewById(R.id.passwordContainer);
+        confirmContainer = root.findViewById(R.id.confirmContainer);
 
-        editFullName = findViewById(R.id.editFullName);
-        editEmail = findViewById(R.id.editEmail);
-        editPassword = findViewById(R.id.editPassword);
-        editConfirmPassword = findViewById(R.id.editConfirmPassword);
+        editFullName = root.findViewById(R.id.editFullName);
+        editEmail = root.findViewById(R.id.editEmail);
+        editPassword = root.findViewById(R.id.editPassword);
+        editConfirmPassword = root.findViewById(R.id.editConfirmPassword);
 
-        btnCreateAccount = findViewById(R.id.btnCreateAccount);
-        txtLoginLink = findViewById(R.id.txtLoginLink);
+        btnCreateAccount = root.findViewById(R.id.btnCreateAccount);
+        txtLoginLink = root.findViewById(R.id.txtLoginLink);
     }
 
     /**
-     * Makes "Login" clickable and routes back to Login screen explicitly.
-     */
+     * Makes "Login" clickable and routes back to LoginFragment using NavController
+    */
     private void setupLoginClickableText() {
+        if (txtLoginLink == null) return;
+
         String fullText = "Already have an account? Login";
         SpannableString spannable = new SpannableString(fullText);
 
@@ -109,13 +123,13 @@ public class SignUpActivity extends AppCompatActivity {
 
         ClickableSpan clickableSpan = new ClickableSpan() {
             @Override
-            public void onClick(View widget) {
-                startActivity(new Intent(SignUpActivity.this, MainActivity.class));
-                finish();
+            public void onClick(@NonNull View widget) {
+                NavHostFragment.findNavController(SignUpFragment.this)
+                        .navigate(R.id.action_signUpFragment_to_loginFragment);
             }
 
             @Override
-            public void updateDrawState(TextPaint ds) {
+            public void updateDrawState(@NonNull TextPaint ds) {
                 ds.setColor(getResources().getColor(R.color.button_green));
                 ds.setUnderlineText(true);
                 ds.setFakeBoldText(true);
@@ -129,55 +143,71 @@ public class SignUpActivity extends AppCompatActivity {
     }
 
     /**
-     * Live helper text validation while user types.
-     * This is similar to what you did in Login page.
-     */
+     * Live helper text validation while user types.*/
     private void setupLiveValidation() {
+        if (editFullName != null) {
+            editFullName.addTextChangedListener(new SimpleTextWatcher() {
+                @Override
+                public void onTextChanged(CharSequence s, int start, int before, int count) {
+                    if (nameContainer != null) {
+                        nameContainer.setHelperText(getFullNameError(getText(editFullName)));
+                    }
+                }
+            });
+        }
 
-        editFullName.addTextChangedListener(new SimpleTextWatcher() {
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-                nameContainer.setHelperText(getFullNameError(getText(editFullName)));
-            }
-        });
+        if (editEmail != null) {
+            editEmail.addTextChangedListener(new SimpleTextWatcher() {
+                @Override
+                public void onTextChanged(CharSequence s, int start, int before, int count) {
+                    if (emailContainer != null) {
+                        emailContainer.setHelperText(getEmailError(getText(editEmail)));
+                    }
+                }
+            });
+        }
 
-        editEmail.addTextChangedListener(new SimpleTextWatcher() {
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-                emailContainer.setHelperText(getEmailError(getText(editEmail)));
-            }
-        });
+        if (editPassword != null) {
+            editPassword.addTextChangedListener(new SimpleTextWatcher() {
+                @Override
+                public void onTextChanged(CharSequence s, int start, int before, int count) {
+                    String pass = getText(editPassword);
 
-        editPassword.addTextChangedListener(new SimpleTextWatcher() {
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-                String pass = getText(editPassword);
+                    // Progressive helper while typing
+                    if (passwordContainer != null) {
+                        passwordContainer.setHelperText(getPasswordLiveHelper(pass));
+                    }
 
-                // Progressive helper while typing
-                passwordContainer.setHelperText(getPasswordLiveHelper(pass));
+                    // Also re-check confirm password live
+                    if (confirmContainer != null) {
+                        confirmContainer.setHelperText(getConfirmPasswordError(
+                                getText(editPassword), getText(editConfirmPassword)
+                        ));
+                    }
+                }
+            });
+        }
 
-                // Also re-check confirm password live
-                confirmContainer.setHelperText(getConfirmPasswordError(
-                        getText(editPassword), getText(editConfirmPassword)
-                ));
-            }
-        });
-
-        editConfirmPassword.addTextChangedListener(new SimpleTextWatcher() {
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-                confirmContainer.setHelperText(getConfirmPasswordError(
-                        getText(editPassword), getText(editConfirmPassword)
-                ));
-            }
-        });
+        if (editConfirmPassword != null) {
+            editConfirmPassword.addTextChangedListener(new SimpleTextWatcher() {
+                @Override
+                public void onTextChanged(CharSequence s, int start, int before, int count) {
+                    if (confirmContainer != null) {
+                        confirmContainer.setHelperText(getConfirmPasswordError(
+                                getText(editPassword), getText(editConfirmPassword)
+                        ));
+                    }
+                }
+            });
+        }
     }
 
     /**
      * Validates all fields again when "Sign up" is clicked.
-     * Live validation is great, but button validation is still required.
-     */
+    */
     private void setupCreateAccount() {
+        if (btnCreateAccount == null) return;
+
         btnCreateAccount.setOnClickListener(v -> {
 
             String name = getText(editFullName);
@@ -190,44 +220,43 @@ public class SignUpActivity extends AppCompatActivity {
             String passError = getPasswordError(pass);
             String confirmError = getConfirmPasswordError(pass, confirm);
 
-            nameContainer.setHelperText(nameError);
-            emailContainer.setHelperText(emailError);
-            passwordContainer.setHelperText(passError);
-            confirmContainer.setHelperText(confirmError);
+            if (nameContainer != null) nameContainer.setHelperText(nameError);
+            if (emailContainer != null) emailContainer.setHelperText(emailError);
+            if (passwordContainer != null) passwordContainer.setHelperText(passError);
+            if (confirmContainer != null) confirmContainer.setHelperText(confirmError);
 
             boolean hasError = (nameError != null || emailError != null || passError != null || confirmError != null);
-
             if (hasError) {
-                Toast.makeText(this, "Please fix the highlighted fields.", Toast.LENGTH_LONG).show();
+                Toast.makeText(requireContext(), "Please fix the highlighted fields.", Toast.LENGTH_LONG).show();
                 return;
             }
 
-            else {
-                handleSignup(name, email, pass); // handle signup here
-                Toast.makeText(this, "Account created successfully!", Toast.LENGTH_LONG).show();
-            }
-            // After sign up, go back to login explicitly
-            startActivity(new Intent(SignUpActivity.this, MainActivity.class));
-            finish();
+            // Proceed with signup (Room + BCrypt via AuthRepository)
+            handleSignup(name, email, pass);
         });
     }
 
+    /**
+     * Creates user in DB, sets session, then navigates to Dashboard
+     */
     private void handleSignup(String fullName, String email, String password) {
-        AuthRepository repo = new AuthRepository(this);
-        SessionManager session = new SessionManager(this);
+        AuthRepository repo = new AuthRepository(requireContext());
+        SessionManager session = new SessionManager(requireContext());
 
         AppExecutors.db().execute(() -> {
 
             // 1) prevent duplicates by checking if email already in the database
             boolean exists = repo.emailExists(email);
 
+            if (!isAdded()) return;
+
             if (exists) {
-                runOnUiThread(() -> {
-                    // show error in your TextInputLayout helper text or Toast
-                    Toast.makeText(this, "Email already exists.", Toast.LENGTH_LONG).show();
-                });
+                requireActivity().runOnUiThread(() ->
+                        Toast.makeText(requireContext(), "Email already exists.", Toast.LENGTH_LONG).show()
+                );
                 return;
             }
+
             // 2) insert new user (repo should hash internally)
             long newUserId = repo.createUser(fullName, email, password);
 
@@ -235,16 +264,15 @@ public class SignUpActivity extends AppCompatActivity {
             session.setLoggedInUserId(newUserId);
 
             // 4) move forward
-            runOnUiThread(() -> {
-                Toast.makeText(this, "Account created successfully!", Toast.LENGTH_LONG).show();
-                startActivity(new Intent(SignUpActivity.this, Dashboard.class));
-                finish();
+            requireActivity().runOnUiThread(() -> {
+                Toast.makeText(requireContext(), "Account created successfully!", Toast.LENGTH_LONG).show();
+                startActivity(new Intent(requireContext(), Dashboard.class));
+                requireActivity().finish(); // prevent back to auth
             });
         });
     }
 
-
-    // ---------------- Validation Methods ----------------
+    // ---------------- Validation Methods  ----------------
 
     /**
      * Full name validation:
@@ -253,6 +281,7 @@ public class SignUpActivity extends AppCompatActivity {
      * - Unicode letters + spaces + hyphen + apostrophe
      */
     private String getFullNameError(String name) {
+        if (name == null) name = "";
         if (name.isEmpty()) return "Full name is required";
         if (name.length() < 2) return "Name must be at least 2 characters";
         if (!NAME_PATTERN.matcher(name).matches()) return "Name can only contain letters and spaces";
@@ -265,6 +294,7 @@ public class SignUpActivity extends AppCompatActivity {
      * - Valid email format
      */
     private String getEmailError(String email) {
+        if (email == null) email = "";
         if (email.isEmpty()) return "Email is required";
         if (!android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches()) return "Invalid email address";
         return null;
@@ -276,6 +306,7 @@ public class SignUpActivity extends AppCompatActivity {
      * - Must match strong password pattern
      */
     private String getPasswordError(String password) {
+        if (password == null) password = "";
         if (password.isEmpty()) return "Password is required";
         if (!PASSWORD_PATTERN.matcher(password).matches()) {
             return "Password must be 8+ chars and include uppercase, lowercase, number, and symbol";
@@ -288,9 +319,10 @@ public class SignUpActivity extends AppCompatActivity {
      * - Required
      * - Must match password
      *
-     * Note: If password is empty, we usually don't show "does not match" yet.
      */
     private String getConfirmPasswordError(String password, String confirm) {
+        if (password == null) password = "";
+        if (confirm == null) confirm = "";
         if (confirm.isEmpty()) return "Confirm password is required";
         if (!password.isEmpty() && !confirm.equals(password)) return "Passwords do not match";
         return null;
@@ -302,7 +334,7 @@ public class SignUpActivity extends AppCompatActivity {
      * Safely gets trimmed text from a TextInputEditText.
      */
     private String getText(TextInputEditText editText) {
-        return editText.getText() == null ? "" : editText.getText().toString().trim();
+        return (editText == null || editText.getText() == null) ? "" : editText.getText().toString().trim();
     }
 
     /**
@@ -311,7 +343,6 @@ public class SignUpActivity extends AppCompatActivity {
     public abstract static class SimpleTextWatcher implements TextWatcher {
         @Override public void beforeTextChanged(CharSequence s, int start, int count, int after) { }
         @Override public void afterTextChanged(Editable s) { }
-
     }
 
     /**
@@ -321,10 +352,9 @@ public class SignUpActivity extends AppCompatActivity {
      * @return helper message or null if the password is strong
      */
     private String getPasswordLiveHelper(String password) {
-        String p = password == null ? "" : password;
+        String p = (password == null) ? "" : password;
 
-        // If empty, you can either show "Password is required" or nothing.
-        // I recommend showing nothing until they type something:
+        // If empty, show nothing until user types something (same approach as your activity)
         if (p.isEmpty()) return null;
 
         if (p.length() < 8) return "Add at least 8 characters";
@@ -337,21 +367,19 @@ public class SignUpActivity extends AppCompatActivity {
     }
 
     private boolean containsUppercase(String s) {
-        return s.matches(".*[A-Z].*");
+        return s != null && s.matches(".*[A-Z].*");
     }
 
     private boolean containsLowercase(String s) {
-        return s.matches(".*[a-z].*");
+        return s != null && s.matches(".*[a-z].*");
     }
 
     private boolean containsDigit(String s) {
-        return s.matches(".*\\d.*");
+        return s != null && s.matches(".*\\d.*");
     }
 
     private boolean containsSpecial(String s) {
         // Match the same special set you use in your regex
-        return s.matches(".*[@$!%*#?&].*");
+        return s != null && s.matches(".*[@$!%*#?&].*");
     }
-
-
 }
