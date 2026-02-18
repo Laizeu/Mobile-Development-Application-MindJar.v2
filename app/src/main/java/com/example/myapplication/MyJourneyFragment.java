@@ -9,6 +9,18 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
+import androidx.navigation.Navigation;
+import androidx.navigation.fragment.NavHostFragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+
+
+import androidx.recyclerview.widget.RecyclerView;
+import com.example.myapplication.room.AppExecutors;
+import com.example.myapplication.room.JournalEntryEntity;
+import com.example.myapplication.room.JournalRepository;
+import com.example.myapplication.room.SessionManager;
+
+import java.util.List;
 
 /**
  * MyJourneyFragment displays the user's personal journey screen.
@@ -16,19 +28,16 @@ import androidx.fragment.app.Fragment;
  * This fragment uses a toolbar with a navigation button that allows
  * the user to return to the previous screen using the fragment back stack.
  */
+
 public class MyJourneyFragment extends Fragment {
 
-    /**
-     * Required empty public constructor.
-     * The system uses this constructor when recreating the fragment.
-     */
+    private RecyclerView rvEntries;
+    private MyJourneyAdapter adapter;
+
     public MyJourneyFragment() {
-        // No initialization is needed here.
+        // Required empty public constructor
     }
 
-    /**
-     * Inflates the layout for the My Journey screen.
-     */
     @Nullable
     @Override
     public View onCreateView(
@@ -43,23 +52,65 @@ public class MyJourneyFragment extends Fragment {
      * Called after the fragment's view has been created.
      * This method is used to configure the toolbar behavior.
      */
+
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
         setupToolbar(view);
+        setupRecyclerView(view);
+        loadEntries(); //
     }
-
     /**
      * Configures the toolbar navigation action.
      * Pressing the back arrow returns the user to the previous fragment
      * without recreating it.
      */
+
     private void setupToolbar(@NonNull View view) {
         Toolbar toolbar = view.findViewById(R.id.toolbar);
 
+        // Recommended with Navigation Component:
         toolbar.setNavigationOnClickListener(v ->
                 getParentFragmentManager().popBackStack()
         );
+
+        // If you insist on FragmentManager back stack (less consistent with nav graph), keep your line instead:
+        // toolbar.setNavigationOnClickListener(v -> getParentFragmentManager().popBackStack());
+    }
+
+    private void setupRecyclerView(@NonNull View view) {
+        rvEntries = view.findViewById(R.id.rvEntries);
+        rvEntries.setLayoutManager(new LinearLayoutManager(requireContext()));
+
+        adapter = new MyJourneyAdapter(entry -> openEntryDetails(entry));
+        rvEntries.setAdapter(adapter);
+    }
+
+    private void loadEntries() {
+        SessionManager session = new SessionManager(requireContext());
+        long userId = session.getLoggedInUserId();
+
+        // If there is no logged-in user, show nothing (or you can show a message)
+        if (userId <= 0) return;
+
+        JournalRepository repo = new JournalRepository(requireContext());
+
+        AppExecutors.db().execute(() -> {
+            List<JournalEntryEntity> entries = repo.listEntries(userId);
+
+            // Update UI on main thread
+            if (isAdded()) {
+                requireActivity().runOnUiThread(() -> adapter.submitList(entries));
+            }
+        });
+    }
+
+    private void openEntryDetails(@NonNull JournalEntryEntity entry) {
+        Bundle args = new Bundle();
+        args.putLong("entryId", entry.entryId);
+
+        Navigation.findNavController(requireView())
+                .navigate(R.id.entryDetailsFragment, args);
     }
 }
