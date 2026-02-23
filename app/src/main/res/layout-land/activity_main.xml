@@ -8,7 +8,7 @@
     android:layout_height="match_parent"
     android:padding="24dp"
     android:background="@color/background_light"
-    tools:context=".MainActivity">
+    tools:context=".ui.MainActivity">
 
     <!-- Side guides -->
     <androidx.constraintlayout.widget.Guideline

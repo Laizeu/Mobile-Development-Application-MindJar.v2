@@ -7,12 +7,12 @@
     <!-- Bottom "tab" destinations -->
     <fragment
         android:id="@+id/homeFragment"
-        android:name="com.example.myapplication.HomeFragment"
+        android:name="com.example.myapplication.ui.home.HomeFragment"
         android:label="Home" />
 
     <fragment
         android:id="@+id/realizationFragment"
-        android:name="com.example.myapplication.RealizationFragment"
+        android:name="com.example.myapplication.ui.realization.RealizationFragment"
         android:label="Realization">
 
         <action
@@ -26,28 +26,28 @@
 
     <fragment
         android:id="@+id/hopeFragment"
-        android:name="com.example.myapplication.HopeFragment"
+        android:name="com.example.myapplication.ui.hope.HopeFragment"
         android:label="Hope" />
 
     <fragment
         android:id="@+id/videosFragment"
-        android:name="com.example.myapplication.VideosFragment"
+        android:name="com.example.myapplication.ui.videos.VideosFragment"
         android:label="Videos" />
 
     <fragment
         android:id="@+id/hotlineFragment"
-        android:name="com.example.myapplication.HotlineFragment"
+        android:name="com.example.myapplication.ui.hotline.HotlineFragment"
         android:label="Hotline" />
 
     <!-- Deeper screens -->
     <fragment
         android:id="@+id/myJourneyFragment"
-        android:name="com.example.myapplication.MyJourneyFragment"
+        android:name="com.example.myapplication.ui.realization.MyJourneyFragment"
         android:label="My Journey" />
 
     <fragment
         android:id="@+id/entryDetailsFragment"
-        android:name="com.example.myapplication.EntryDetailsFragment"
+        android:name="com.example.myapplication.ui.realization.EntryDetailsFragment"
         android:label="Entry Details" />
 
 </navigation>

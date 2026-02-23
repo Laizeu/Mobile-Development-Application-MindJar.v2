@@ -1,6 +1,10 @@
-package com.example.myapplication.room;
+package com.example.myapplication.data.repository;
 
 import android.content.Context;
+
+import com.example.myapplication.data.local.AppDatabase;
+import com.example.myapplication.data.local.dao.UserDao;
+import com.example.myapplication.data.local.entity.UserEntity;
 
 import org.mindrot.jbcrypt.BCrypt;
 

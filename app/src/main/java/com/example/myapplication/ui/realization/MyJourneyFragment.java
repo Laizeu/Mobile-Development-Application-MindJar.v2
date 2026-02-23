@@ -1,4 +1,4 @@
-package com.example.myapplication;
+package com.example.myapplication.ui.realization;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -10,15 +10,16 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.Navigation;
-import androidx.navigation.fragment.NavHostFragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
 
 import androidx.recyclerview.widget.RecyclerView;
-import com.example.myapplication.room.AppExecutors;
-import com.example.myapplication.room.JournalEntryEntity;
-import com.example.myapplication.room.JournalRepository;
-import com.example.myapplication.room.SessionManager;
+
+import com.example.myapplication.R;
+import com.example.myapplication.data.local.entity.JournalEntryEntity;
+import com.example.myapplication.data.repository.JournalRepository;
+import com.example.myapplication.data.SessionManager;
+import com.example.myapplication.data.local.*;
 
 import java.util.List;
 

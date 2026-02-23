@@ -1,9 +1,11 @@
-package com.example.myapplication;
+package com.example.myapplication.ui;
 
 import android.os.Bundle;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+
+import com.example.myapplication.R;
 
 /*
  * MainActivity

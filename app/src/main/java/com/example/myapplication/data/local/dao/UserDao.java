@@ -1,8 +1,10 @@
-package com.example.myapplication.room;
+package com.example.myapplication.data.local.dao;
 
 import androidx.room.Dao;
 import androidx.room.Insert;
 import androidx.room.Query;
+
+import com.example.myapplication.data.local.entity.UserEntity;
 
 @Dao
 public interface UserDao {

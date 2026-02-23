@@ -1,4 +1,4 @@
-package com.example.myapplication;
+package com.example.myapplication.ui.auth;
 
 import android.content.Intent;
 import android.graphics.Color;
@@ -26,12 +26,17 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.fragment.NavHostFragment;
 
-import com.example.myapplication.room.AppExecutors;
-import com.example.myapplication.room.AuthRepository;
-import com.example.myapplication.room.SessionManager;
-import com.example.myapplication.room.UserEntity;
+import com.example.myapplication.ui.Dashboard;
+import com.example.myapplication.R;
+import com.example.myapplication.data.*;
+import com.example.myapplication.data.local.*;
+import com.example.myapplication.data.repository.*;
+
+import com.example.myapplication.data.local.entity.UserEntity;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
+
+
 
 /**
  * LoginFragment handles the Login UI and validation logic.

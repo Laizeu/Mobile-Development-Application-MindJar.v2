@@ -1,4 +1,4 @@
-package com.example.myapplication.room;
+package com.example.myapplication.data.local.entity;
 
 import androidx.room.Entity;
 import androidx.room.Index;

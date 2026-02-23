@@ -1,4 +1,4 @@
-package com.example.myapplication;
+package com.example.myapplication.ui.realization;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -9,6 +9,8 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
+
+import com.example.myapplication.R;
 
 /**
  * EntryDetailsFragment displays the detailed view of a selected journal entry.

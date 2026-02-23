@@ -1,10 +1,15 @@
-package com.example.myapplication.room;
+package com.example.myapplication.data.local;
 
 import android.content.Context;
 
 import androidx.room.Database;
 import androidx.room.Room;
 import androidx.room.RoomDatabase;
+
+import com.example.myapplication.data.local.dao.JournalEntryDao;
+import com.example.myapplication.data.local.entity.JournalEntryEntity;
+import com.example.myapplication.data.local.dao.UserDao;
+import com.example.myapplication.data.local.entity.UserEntity;
 
 @Database(
         entities = {UserEntity.class, JournalEntryEntity.class},

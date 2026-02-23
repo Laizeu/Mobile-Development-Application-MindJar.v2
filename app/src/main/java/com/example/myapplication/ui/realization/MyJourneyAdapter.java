@@ -1,4 +1,4 @@
-package com.example.myapplication;
+package com.example.myapplication.ui.realization;
 
 import android.view.LayoutInflater;
 import android.view.View;
@@ -9,7 +9,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.myapplication.R;
-import com.example.myapplication.room.JournalEntryEntity;
+import com.example.myapplication.data.local.entity.JournalEntryEntity;
 
 import java.util.ArrayList;
 import java.util.List;

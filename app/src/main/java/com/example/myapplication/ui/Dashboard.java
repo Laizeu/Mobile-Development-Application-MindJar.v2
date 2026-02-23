@@ -1,4 +1,4 @@
-package com.example.myapplication;
+package com.example.myapplication.ui;
 
 import android.graphics.Color;
 import android.os.Bundle;
@@ -13,6 +13,8 @@ import androidx.core.content.ContextCompat;
 import androidx.navigation.NavController;
 import androidx.navigation.NavOptions;
 import androidx.navigation.fragment.NavHostFragment;
+
+import com.example.myapplication.R;
 
 /*
  * Dashboard Activity

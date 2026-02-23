@@ -1,9 +1,11 @@
-package com.example.myapplication.room;
+package com.example.myapplication.data.local.dao;
 
 import androidx.room.Dao;
 import androidx.room.Insert;
 import androidx.room.Query;
 import androidx.room.Update;
+
+import com.example.myapplication.data.local.entity.JournalEntryEntity;
 
 import java.util.List;
 

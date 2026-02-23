@@ -1,4 +1,4 @@
-package com.example.myapplication;
+package com.example.myapplication.ui.home;
 
 import android.app.AlertDialog;
 import android.graphics.Color;
@@ -14,11 +14,14 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
+import com.example.myapplication.R;
 import com.google.android.material.textfield.TextInputEditText;
 
-import com.example.myapplication.room.AppExecutors;
-import com.example.myapplication.room.JournalRepository;
-import com.example.myapplication.room.SessionManager;
+
+import com.example.myapplication.data.*;
+import com.example.myapplication.data.local.*;
+import com.example.myapplication.data.repository.*;
+
 
 /**
  * HomeFragment collects the user's current emotion and a short text description.

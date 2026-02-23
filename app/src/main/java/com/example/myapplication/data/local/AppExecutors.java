@@ -1,4 +1,4 @@
-package com.example.myapplication.room;
+package com.example.myapplication.data.local;
 
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
