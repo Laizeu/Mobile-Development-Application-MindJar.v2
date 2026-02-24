@@ -1,5 +1,6 @@
 plugins {
     alias(libs.plugins.android.application)
+    id("com.google.gms.google-services")
 }
 
 android {
@@ -57,6 +58,10 @@ dependencies {
 
     //password hashing
     implementation("org.mindrot:jbcrypt:0.4")
+
+    //firebase
+    implementation(platform("com.google.firebase:firebase-bom:34.9.0"))
+    implementation("com.google.firebase:firebase-analytics")
 
     //Test
     testImplementation(libs.junit)
