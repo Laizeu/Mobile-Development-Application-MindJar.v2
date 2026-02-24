@@ -6,14 +6,12 @@ import androidx.room.Database;
 import androidx.room.Room;
 import androidx.room.RoomDatabase;
 
-import com.example.myapplication.data.local.dao.JournalEntryDao;
-import com.example.myapplication.data.local.entity.JournalEntryEntity;
-import com.example.myapplication.data.local.dao.UserDao;
-import com.example.myapplication.data.local.entity.UserEntity;
+import com.example.myapplication.data.local.dao.*;
+import com.example.myapplication.data.local.entity.*;
 
 @Database(
-        entities = {UserEntity.class, JournalEntryEntity.class},
-        version = 1,
+        entities = {UserEntity.class, JournalEntryEntity.class,VideoEntity.class},
+        version = 2,
         exportSchema = true
 )
 
@@ -26,6 +24,7 @@ public abstract class AppDatabase extends RoomDatabase {
     // DAO accessors (Room generates implementations)
     public abstract UserDao userDao();
     public abstract JournalEntryDao journalEntryDao();
+    public abstract VideoDao videoDao();
 
     // Singleton DB instance
     public static AppDatabase getInstance(Context context) {
@@ -37,7 +36,7 @@ public abstract class AppDatabase extends RoomDatabase {
                                     AppDatabase.class,
                                     "mindjar.db"
                             )
-                            .fallbackToDestructiveMigration()  // to be removed later.
+                            .fallbackToDestructiveMigration(true)  // to be removed later.
                             .build();
                 }
             }
