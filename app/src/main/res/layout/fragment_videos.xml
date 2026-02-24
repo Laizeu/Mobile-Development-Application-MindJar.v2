@@ -88,6 +88,7 @@
             app:layout_constraintStart_toStartOf="@id/verticalConstraint1"
             app:layout_constraintEnd_toStartOf="@id/verticalConstraint2" />
 
+
         <!-- Video card helper 1 -->
         <androidx.cardview.widget.CardView
             android:id="@+id/cardContent1"

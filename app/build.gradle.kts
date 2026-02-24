@@ -1,5 +1,7 @@
 plugins {
     alias(libs.plugins.android.application)
+//    firebase
+    id("com.google.gms.google-services")
 }
 
 android {
@@ -51,6 +53,11 @@ dependencies {
     //Room
     implementation(libs.room.runtime)
     annotationProcessor(libs.room.compiler)
+
+    //firebase
+    implementation(platform("com.google.firebase:firebase-bom:34.9.0"))
+    implementation("com.google.firebase:firebase-analytics")
+
 
     //password hashing
     implementation("org.mindrot:jbcrypt:0.4")
