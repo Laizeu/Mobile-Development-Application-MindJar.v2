@@ -1,4 +1,4 @@
- <androidx.constraintlayout.widget.ConstraintLayout
+<androidx.constraintlayout.widget.ConstraintLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -8,7 +8,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
 
-<!--    Vertical Constraints-->
+    <!--    Vertical Constraints-->
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/constraintVertical1"
         android:layout_width="wrap_content"
@@ -37,7 +37,7 @@
         android:orientation="vertical"
         app:layout_constraintGuide_percent="0.63" />
 
-<!--    Horizontal Constraints -->
+    <!--    Horizontal Constraints -->
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/constraintHorizontal1"

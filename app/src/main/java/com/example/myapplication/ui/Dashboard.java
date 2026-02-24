@@ -1,4 +1,4 @@
-package com.example.myapplication;
+package com.example.myapplication.ui;
 
 import android.graphics.Color;
 import android.os.Bundle;
@@ -14,31 +14,45 @@ import androidx.navigation.NavController;
 import androidx.navigation.NavOptions;
 import androidx.navigation.fragment.NavHostFragment;
 
-/**
- * Dashboard hosts the NavHostFragment and provides bottom navigation
- * (custom ImageView icons) using a navigation resource file (nav_graph.xml).
- *
- * Key change vs. old approach:
- * - No manual FragmentTransactions (no show/hide/replace).
- * - Navigation is done via NavController + destination IDs in the nav graph.
+import com.example.myapplication.R;
+
+/*
+ * Dashboard Activity
+ * - Hosts the NavHostFragment for nav_graph
+ * - Implements a custom "bottom nav" using ImageViews (tinting selected icon)
+ * - Keeps icon tint in sync with NavController destination changes
  */
+
 public class Dashboard extends AppCompatActivity implements View.OnClickListener {
 
+    // -------------------------
+    // Constants / State Keys
+    // -------------------------
     private static final String KEY_SELECTED_ICON_ID = "selected_icon_id";
+    private static final int DEFAULT_SELECTED_ICON_ID = R.id.homeIcon;
+    private static final int SELECTED_COLOR = 0xFF73903F; // #73903F
 
-    // Bottom navigation icons
+    // -------------------------
+    // Views (Bottom Navigation)
+    // -------------------------
     private ImageView homeIcon;
     private ImageView realizationIcon;
     private ImageView hopeIcon;
     private ImageView videosIcon;
     private ImageView hotlineIcon;
 
-    // NavController from the NavHostFragment
+    // -------------------------
+    // Navigation
+    // -------------------------
     private NavController navController;
 
     // Tracks which icon is selected for tint + restore
-    private int selectedIconId = R.id.homeIcon;
+    private int selectedIconId = DEFAULT_SELECTED_ICON_ID;
 
+
+    // -------------------------
+    // Lifecycle
+    // -------------------------
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -53,13 +67,21 @@ public class Dashboard extends AppCompatActivity implements View.OnClickListener
         if (savedInstanceState != null) {
             selectedIconId = savedInstanceState.getInt(KEY_SELECTED_ICON_ID, R.id.homeIcon);
         } else {
-            // nav_graph.xml startDestination is Home, so default highlight Home.
-            selectedIconId = R.id.homeIcon;
+            selectedIconId = R.id.homeIcon;   // nav_graph.xml startDestination is Home, so default highlight Home.
         }
 
-        applyTintForIcon(selectedIconId);
+        applyTintForIcon(selectedIconId); //change icon color of the selected menu
     }
 
+    @Override
+    public void onSaveInstanceState(@NonNull Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putInt(KEY_SELECTED_ICON_ID, selectedIconId);
+    }
+
+    // -------------------------
+    // Helpers
+    // -------------------------
     private void bindViewsAndListeners() {
         homeIcon = findViewById(R.id.homeIcon);
         realizationIcon = findViewById(R.id.realizationIcon);
@@ -86,9 +108,9 @@ public class Dashboard extends AppCompatActivity implements View.OnClickListener
     }
 
     /**
-     * Keeps the icon tint in sync even when navigation happens from inside fragments
-     * (e.g., Realization -> EntryDetails, back button, etc.).
-     */
+      Keeps the icon tint in sync even when navigation happens from inside fragments
+     (e.g., Realization -> EntryDetails, back button, etc.).
+     **/
     private void setupDestinationTintListener() {
         navController.addOnDestinationChangedListener((controller, destination, arguments) -> {
             int destId = destination.getId();
@@ -117,11 +139,9 @@ public class Dashboard extends AppCompatActivity implements View.OnClickListener
         });
     }
 
-    @Override
-    public void onSaveInstanceState(@NonNull Bundle outState) {
-        super.onSaveInstanceState(outState);
-        outState.putInt(KEY_SELECTED_ICON_ID, selectedIconId);
-    }
+    // -------------------------
+    // Click Handling (Bottom Nav)
+    // -------------------------
 
     @Override
     public void onClick(View v) {
@@ -148,15 +168,15 @@ public class Dashboard extends AppCompatActivity implements View.OnClickListener
         if (navController == null) return;
 
         NavOptions options = new NavOptions.Builder()
-                // Avoid multiple copies of the same destination on the stack
-                .setLaunchSingleTop(true)
-                // Clear deeper screens when switching tabs
-                .setPopUpTo(navController.getGraph().getStartDestinationId(), false)
+                .setLaunchSingleTop(true)  // Avoid multiple copies of the same destination on the stack
+                .setPopUpTo(navController.getGraph().getStartDestinationId(), false) // Clear deeper screens when switching tabs
                 .build();
-
         navController.navigate(destinationId, null, options);
     }
 
+    // -------------------------
+    // UI (Icon Tinting)
+    // -------------------------
     private void applyTintForIcon(int iconId) {
         resetAllIconsToDefaultColor();
 
@@ -179,12 +199,13 @@ public class Dashboard extends AppCompatActivity implements View.OnClickListener
         hotlineIcon.setColorFilter(black);
     }
 
-    @Override
-    public void onBackPressed() {
-        // Let Navigation Component handle back stack first
-        if (navController != null && navController.navigateUp()) {
-            return;
-        }
-        super.onBackPressed();
-    }
+//    @Override
+//    public void onBackPressed() {
+//        // Let Navigation Component handle back stack first
+//        if (navController != null && navController.navigateUp()) {
+//            return;
+//        }
+//        super.onBackPressed();
+//    }
+
 }

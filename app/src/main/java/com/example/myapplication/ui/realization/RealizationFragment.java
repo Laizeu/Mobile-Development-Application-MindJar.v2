@@ -1,4 +1,4 @@
-package com.example.myapplication;
+package com.example.myapplication.ui.realization;
 
 import android.os.Bundle;
 import android.util.Log;
@@ -15,6 +15,8 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.cardview.widget.CardView;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.Navigation;
+
+import com.example.myapplication.R;
 
 /**
  * RealizationFragment displays reflection cards and handles user interactions.

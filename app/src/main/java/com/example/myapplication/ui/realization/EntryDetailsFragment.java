@@ -1,4 +1,4 @@
-package com.example.myapplication;
+package com.example.myapplication.ui.realization;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -10,38 +10,35 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
 
-/**
- * MyJourneyFragment displays the user's personal journey screen.
- *
- * This fragment uses a toolbar with a navigation button that allows
- * the user to return to the previous screen using the fragment back stack.
- */
-public class MyJourneyFragment extends Fragment {
+import com.example.myapplication.R;
 
+/**
+ * EntryDetailsFragment displays the detailed view of a selected journal entry.
+ *
+ * This fragment inflates the entry details layout and configures a toolbar
+ * with a back button that allows the user to return to the previous
+ * screen using the Fragment back stack.
+ */
+
+public class EntryDetailsFragment extends Fragment {
     /**
      * Required empty public constructor.
      * The system uses this constructor when recreating the fragment.
      */
-    public MyJourneyFragment() {
-        // No initialization is needed here.
-    }
+    public EntryDetailsFragment() {}
 
-    /**
-     * Inflates the layout for the My Journey screen.
-     */
     @Nullable
     @Override
-    public View onCreateView(
-            @NonNull LayoutInflater inflater,
-            @Nullable ViewGroup container,
-            @Nullable Bundle savedInstanceState
-    ) {
-        return inflater.inflate(R.layout.fragment_my_journey, container, false);
+    public View onCreateView(@NonNull LayoutInflater inflater,
+                             @Nullable ViewGroup container,
+                             @Nullable Bundle savedInstanceState) {
+        return inflater.inflate(R.layout.fragment_entry_details, container, false);
     }
+
 
     /**
      * Called after the fragment's view has been created.
-     * This method is used to configure the toolbar behavior.
+     * This method is used to initialize UI components and listeners.
      */
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
@@ -50,10 +47,10 @@ public class MyJourneyFragment extends Fragment {
         setupToolbar(view);
     }
 
+
     /**
-     * Configures the toolbar navigation action.
-     * Pressing the back arrow returns the user to the previous fragment
-     * without recreating it.
+     * Configures the toolbar navigation behavior.
+     * Pressing the navigation button pops the current fragment from the back stack.
      */
     private void setupToolbar(@NonNull View view) {
         Toolbar toolbar = view.findViewById(R.id.toolbar);

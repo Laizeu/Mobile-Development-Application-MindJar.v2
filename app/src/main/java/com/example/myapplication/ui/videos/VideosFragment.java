@@ -1,4 +1,4 @@
-package com.example.myapplication;
+package com.example.myapplication.ui.videos;
 
 import android.annotation.SuppressLint;
 import android.content.Intent;
@@ -13,6 +13,8 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+
+import com.example.myapplication.R;
 
 /**
  * VideosFragment provides quick access to inspirational YouTube videos.
