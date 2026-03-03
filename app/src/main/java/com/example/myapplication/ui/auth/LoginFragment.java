@@ -28,13 +28,12 @@ import androidx.navigation.fragment.NavHostFragment;
 
 import com.example.myapplication.ui.Dashboard;
 import com.example.myapplication.R;
-import com.example.myapplication.data.*;
-import com.example.myapplication.data.local.*;
-import com.example.myapplication.data.repository.*;
 
-import com.example.myapplication.data.local.entity.UserEntity;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
+
+import com.example.myapplication.data.repository.AuthRepository;
+
 
 
 
@@ -208,7 +207,7 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
             return;
         }
 
-        // Real DB-backed credential check (Room)
+        // Firebase Auth credential check
         tryLogin(email, password);
     }
 
@@ -280,34 +279,25 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
     }
 
     private void tryLogin(String email, String password) {
-        AuthRepository repo = new AuthRepository(requireContext());
-        SessionManager session = new SessionManager(requireContext());
+        AuthRepository repo = new AuthRepository();
 
-        AppExecutors.db().execute(() -> {
-            UserEntity user = repo.getUserByEmail(email);
+        repo.login(email, password, new AuthRepository.AuthCallback() {
 
-            boolean ok = false;
-            long userId = -1;
-
-            if (user != null) {
-                ok = repo.verifyPassword(password, user.passwordHash);
-                if (ok) userId = user.id;
+            @Override
+            public void onSuccess() {
+                // Firebase is already signed in — no manual session needed
+                openDashboard();
+                requireActivity().finish(); // prevent back to login
             }
 
-            boolean finalOk = ok;
-            long finalUserId = userId;
-
-            if (!isAdded()) return;
-
-            requireActivity().runOnUiThread(() -> {
-                if (finalOk) {
-                    session.setLoggedInUserId(finalUserId);
-                    openDashboard();
-                    requireActivity().finish(); // prevent back to login
-                } else {
-                    Toast.makeText(requireContext(), "Invalid email or password", Toast.LENGTH_LONG).show();
-                }
-            });
+            @Override
+            public void onError(String errorMessage) {
+                Toast.makeText(requireContext(),
+                        "Invalid email or password",
+                        Toast.LENGTH_LONG).show();
+            }
         });
     }
+
+
 }
