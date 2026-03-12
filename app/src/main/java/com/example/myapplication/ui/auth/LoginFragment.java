@@ -1,5 +1,6 @@
 package com.example.myapplication.ui.auth;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
@@ -18,9 +19,12 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.CheckBox;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
@@ -29,13 +33,16 @@ import androidx.navigation.fragment.NavHostFragment;
 import com.example.myapplication.ui.Dashboard;
 import com.example.myapplication.R;
 
+import com.google.android.gms.auth.api.signin.GoogleSignIn;
+import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
+import com.google.android.gms.auth.api.signin.GoogleSignInClient;
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
+import com.google.android.gms.common.api.ApiException;
+import com.google.android.gms.tasks.Task;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
 
 import com.example.myapplication.data.repository.AuthRepository;
-
-
-
 
 /**
  * LoginFragment handles the Login UI and validation logic.
@@ -59,6 +66,14 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
     private Button btnLogin;
     private CheckBox checkShowPassword; // used as show/hide toggle
 
+    // --- Google Auth ---
+    private ImageView iconGoogle;
+
+    private GoogleSignInClient googleSignInClient; // null if Google auth is not configured
+
+    private final AuthRepository repo = new AuthRepository();
+
+
     public LoginFragment() {
         // Required empty public constructor
     }
@@ -70,7 +85,6 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
             @Nullable ViewGroup container,
             @Nullable Bundle savedInstanceState
     ) {
-        // Uses the fragment version of your existing login layout
         return inflater.inflate(R.layout.fragment_login, container, false);
     }
 
@@ -79,16 +93,16 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
         super.onViewCreated(view, savedInstanceState);
 
         bindViews(view);
+        setupGoogleAuth();
         setupListeners();
         setupLiveValidation();
         setupSignUpLink(view);
 
-        // SessionManager session = new SessionManager(requireContext());
-        // if (session.getLoggedInUserId() > 0) {
-        //     openDashboard();
-        //     requireActivity().finish();
-        // }
     }
+
+    // -------------------------------------------------------------------------
+    // View binding
+    // -------------------------------------------------------------------------
 
     /**
      * Binds XML views to Java fields.
@@ -104,11 +118,17 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
 
         // NOTE: Your checkbox id is "checkBox" in XML.
         checkShowPassword = root.findViewById(R.id.checkBox);
+
+        //Google Auth
+        iconGoogle = root.findViewById(R.id.iconGoogle);
     }
 
-    /**
-     * Sets up click listeners for Login button and password toggle checkbox.
-     */
+    // -------------------------------------------------------------------------
+    // Listeners
+    // -------------------------------------------------------------------------
+
+    // Sets up click listeners for Login button and password toggle checkbox.
+
     private void setupListeners() {
         if (btnLogin != null) btnLogin.setOnClickListener(this);
 
@@ -117,6 +137,22 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
                     (buttonView, isChecked) -> togglePasswordVisibility(isChecked)
             );
 
+        }
+
+        if (iconGoogle != null) {
+            iconGoogle.setOnClickListener(v -> {
+
+                // null-guard — prevents NPE when Google auth is unconfigured
+                if (googleSignInClient == null) {
+                    Toast.makeText(requireContext(),
+                            "Google Sign-In is not available",
+                            Toast.LENGTH_SHORT).show();
+                    return;
+                }
+
+                Intent signInIntent = googleSignInClient.getSignInIntent();
+                googleSignInLauncher.launch(signInIntent);
+            });
         }
     }
 
@@ -279,7 +315,6 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
     }
 
     private void tryLogin(String email, String password) {
-        AuthRepository repo = new AuthRepository();
 
         repo.login(email, password, new AuthRepository.AuthCallback() {
 
@@ -298,6 +333,83 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
             }
         });
     }
+
+    // -------------------------------------------------------------------------
+    //  Google Auth setup
+    // -------------------------------------------------------------------------
+    /**
+     * If default_web_client_id is missing or empty (e.g. google-services.json not linked),
+     * googleSignInClient is set to null and a Toast is shown.  setupListeners() checks for
+     * null before calling getSignInIntent(), so no NPE can occur.
+    */
+    private void setupGoogleAuth() {
+        String webClientId = getString(R.string.default_web_client_id);
+        if (webClientId == null || webClientId.trim().isEmpty()) {
+            Toast.makeText(requireContext(),
+                    "Google auth is not configured",
+                    Toast.LENGTH_LONG).show();
+            googleSignInClient = null;
+            return;
+        }
+
+        GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+                .requestIdToken(webClientId)
+                .requestEmail()
+                .build();
+
+        googleSignInClient = GoogleSignIn.getClient(requireContext(), gso);
+    }
+
+
+    /**
+     * Receives the result from Google's sign-in screen.
+     *
+     * Happy path:
+     *   RESULT_OK  → extract GoogleSignInAccount → get idToken → hand off to AuthRepository
+     *
+     * Error paths:
+     *   idToken null     → shows a Toast (shouldn't happen if SHA-1 is registered in Firebase)
+     *   ApiException     → shows the status code (e.g. 10 = developer_error = bad SHA-1/client ID)
+     *   RESULT_CANCELLED → user pressed Back; show brief Toast and do nothing
+     */
+
+    private final ActivityResultLauncher<Intent> googleSignInLauncher =
+            registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), result -> {
+                if (result.getResultCode() == Activity.RESULT_OK && result.getData() != null) {
+                    Task<GoogleSignInAccount> task =
+                            GoogleSignIn.getSignedInAccountFromIntent(result.getData());
+                    try {
+                        GoogleSignInAccount account = task.getResult(ApiException.class);
+                        String idToken = account != null ? account.getIdToken() : null;
+                        if (idToken != null && !idToken.isEmpty()) {
+                            repo.loginWithGoogleIdToken(idToken, new AuthRepository.AuthCallback() {
+                                @Override
+                                public void onSuccess() {
+                                    openDashboard();
+                                    requireActivity().finish();
+                                }
+
+                                @Override
+                                public void onError(String errorMessage) {
+                                    Toast.makeText(requireContext(),
+                                            errorMessage,
+                                            Toast.LENGTH_LONG).show();
+                                }
+                            });
+                        } else {
+                            Toast.makeText(requireContext(),
+                                    "Google token is null",
+                                    Toast.LENGTH_LONG).show();
+                        }
+                    } catch (ApiException e) {
+                        Toast.makeText(requireContext(),
+                                "Google Sign-In failed: " + e.getStatusCode(),
+                                Toast.LENGTH_LONG).show();
+                    }
+                }else {
+                    Toast.makeText(requireContext(), "Google Sign-In cancelled", Toast.LENGTH_SHORT).show();
+                }
+            });
 
 
 }
