@@ -4,9 +4,12 @@ import android.content.Context;
 import android.util.Log;
 
 import com.example.myapplication.data.local.AppDatabase;
+import com.example.myapplication.data.local.AppExecutors;
 import com.example.myapplication.data.local.dao.JournalEntryDao;
 import com.example.myapplication.data.local.entity.JournalEntryEntity;
 import com.google.firebase.firestore.FirebaseFirestore;
+
+import androidx.annotation.NonNull;
 
 import java.util.HashMap;
 import java.util.List;
@@ -79,8 +82,10 @@ public class JournalRepository {
                     // Entry is now safely backed up in Firestore.
                     // Flip the flag in Room so WorkManager skips it on next run.
                     entry.syncedToFirebase = true;
-                    dao.update(entry);
-                    Log.d(TAG, "Synced entry " + entry.firestoreId + " to Firestore");
+                    AppExecutors.db().execute(() -> {
+                        dao.update(entry);
+                        Log.d(TAG, "Synced entry " + entry.firestoreId + " to Firestore");
+                    });
                 })
                 .addOnFailureListener(e -> {
                     // Firestore write failed — no network, permission error, etc.
@@ -119,4 +124,143 @@ public class JournalRepository {
     public JournalEntryEntity findByFirestoreId(String firestoreId) {
         return dao.findByFirestoreId(firestoreId);
     }
+
+    // ─────────────────────────────────────────────────────────────────
+    // RESTORE — pulls Firestore entries into Room on fresh install/login.
+    // Called by RealizationViewModel.loadEntriesWithRestore().
+    //
+    // Flow:
+    //   1. Query Firestore for all entries under this userId
+    //   2. For each document, check if firestoreId already exists in Room
+    //   3. Missing → insert into Room with syncedToFirebase = true
+    //   4. Call onComplete so ViewModel can refresh the UI
+    // ─────────────────────────────────────────────────────────────────
+    public void restoreFromFirestore(String userId, Runnable onComplete) {
+        FirebaseFirestore.getInstance()
+                .collection("journal_entries")
+                .document(userId)
+                .collection("entries")
+                .get()
+                .addOnSuccessListener(querySnapshot -> {
+
+                    if (querySnapshot.isEmpty()) {
+                        // No entries in Firestore — nothing to restore.
+                        Log.d(TAG, "Restore: no documents found for " + userId);
+                        onComplete.run();
+                        return;
+                    }
+
+                    Log.d(TAG, "Restore: found " + querySnapshot.size() + " documents");
+
+                    // Process documents on background thread — Room forbids main thread.
+                    AppExecutors.db().execute(() -> {
+
+                        for (var document : querySnapshot.getDocuments()) {
+                            String firestoreId    = document.getString("firestoreId");
+                            String emotion        = document.getString("emotion");
+                            String description    = document.getString("description");
+                            Long   createdAtEpochMs = document.getLong("createdAtEpochMs");
+
+                            // Skip any document that is missing required fields.
+                            if (firestoreId == null || emotion == null
+                                    || description == null || createdAtEpochMs == null) {
+                                Log.w(TAG, "Restore: skipping malformed document: "
+                                        + document.getId());
+                                continue;
+                            }
+
+                            // Check if this entry already exists in Room.
+                            // Uses the firestoreId index for fast lookup.
+                            JournalEntryEntity existing =
+                                    dao.findByFirestoreId(firestoreId);
+
+                            if (existing != null) {
+                                // Already in Room — skip to avoid duplicates.
+                                Log.d(TAG, "Restore: already exists — " + firestoreId);
+                                continue;
+                            }
+
+                            // Entry is missing from Room — insert it.
+                            // syncedToFirebase = true because it came FROM Firestore.
+                            // Setting it false would cause WorkManager to re-push
+                            // this entry unnecessarily on the next sync run.
+                            JournalEntryEntity entry = new JournalEntryEntity(
+                                    userId, emotion, description, createdAtEpochMs);
+                            entry.firestoreId      = firestoreId;
+                            entry.syncedToFirebase = true;
+                            dao.insert(entry);
+
+                            Log.d(TAG, "Restore: inserted " + firestoreId);
+                        }
+
+                        // All documents processed — notify caller.
+                        onComplete.run();
+                    });
+                })
+                .addOnFailureListener(e -> {
+                    // Restore failed (no internet, permission error, etc.)
+                    // Room is served as-is. App still works offline.
+                    Log.w(TAG, "Restore failed: " + e.getMessage());
+                    onComplete.run();
+                });
+    }
+
+    // ─────────────────────────────────────────────────────────────────
+    // DELETE — called from EntryDetailsViewModel on a background thread
+    // Step 1: Delete from Room immediately (source of truth).
+    // Step 2: Delete from Firestore asynchronously (fire-and-forget).
+    // If Firestore delete fails and restoreFromFirestore() runs later,
+    // the entry will reappear — this is a known offline limitation.
+    // ─────────────────────────────────────────────────────────────────
+    public void deleteEntry(JournalEntryEntity entry) {
+
+        // Step 1: Room delete — synchronous, must be on background thread.
+        dao.deleteByEntryId(entry.entryId);
+        Log.d(TAG, "Deleted entry from Room: " + entry.entryId);
+
+        // Step 2: Firestore delete — skip if entry was never synced.
+        if (entry.firestoreId == null || entry.firestoreId.isEmpty()) {
+            Log.d(TAG, "No firestoreId — skipping Firestore delete");
+            return;
+        }
+
+        // Firestore path mirrors pushToFirestore():
+        // journal_entries/{userId}/entries/{firestoreId}
+        FirebaseFirestore.getInstance()
+                .collection("journal_entries")
+                .document(entry.userId)
+                .collection("entries")
+                .document(entry.firestoreId)
+                .delete()
+                .addOnSuccessListener(unused ->
+                        Log.d(TAG, "Deleted from Firestore: " + entry.firestoreId))
+                .addOnFailureListener(e ->
+                        Log.w(TAG, "Firestore delete failed: " + e.getMessage()));
+    }
+    // ─────────────────────────────────────────────────────────────────
+    // UPDATE — called from EditEntryViewModel on a background thread.
+    // Mutates the entity in place, marks it unsynced, writes to Room,
+    // then overwrites the Firestore document via pushToFirestore().
+    // ─────────────────────────────────────────────────────────────────
+    public void updateEntry(@NonNull JournalEntryEntity entry,
+                            @NonNull String newEmotion,
+                            @NonNull String newDescription) {
+
+        entry.emotion          = newEmotion;
+        entry.description      = newDescription;
+        // Mark unsynced so WorkManager retries Firestore if offline.
+        entry.syncedToFirebase = false;
+
+        // Room update — synchronous, already on background thread.
+        dao.update(entry);
+        Log.d(TAG, "Updated entry in Room: " + entry.entryId);
+
+        // Firestore overwrite — fire-and-forget.
+        // .set() replaces the full document, so emotion and description
+        // are updated without needing a separate Firestore method.
+        pushToFirestore(entry);
+    }
+
+
+
 }
