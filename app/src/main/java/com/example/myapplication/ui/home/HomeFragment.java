@@ -13,6 +13,7 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModelProvider;
 
 import com.example.myapplication.R;
 import com.google.android.material.textfield.TextInputEditText;
@@ -49,7 +50,7 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
 
     // Color used to highlight the selected icon.
     private static final int SELECTED_BG_COLOR = Color.parseColor("#A5D6A7"); // light green
-
+    private HomeViewModel viewModel;
     /**
      * Required empty public constructor.
      * The Android system uses this when recreating the fragment.
@@ -58,25 +59,38 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
         // No initialization is needed here.
     }
 
+    @Nullable
     @Override
-    public void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        // This fragment does not need special setup in onCreate().
+    public View onCreateView(@NonNull LayoutInflater inflater,
+                             @Nullable ViewGroup container,
+                             @Nullable Bundle savedInstanceState) {
+        return inflater.inflate(R.layout.fragment_home, container, false);
     }
 
-    @Override
-    public @NonNull View onCreateView(
-            @NonNull LayoutInflater inflater,
-            @Nullable ViewGroup container,
-            @Nullable Bundle savedInstanceState
-    ) {
-        View view = inflater.inflate(R.layout.fragment_home, container, false);
 
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+
+        // Wire up all view references first — must happen before ViewModel setup
         bindViews(view);
         setClickListeners();
 
-        return view;
+        // Initialise ViewModel
+        HomeViewModelFactory factory =
+                new HomeViewModelFactory(requireActivity().getApplication());
+        viewModel = new ViewModelProvider(this, factory).get(HomeViewModel.class);
+
+        // Observe save result from ViewModel
+        viewModel.getSaveStatus().observe(getViewLifecycleOwner(), status -> {
+            if ("saved".equals(status)) {
+                handleSubmissionSuccess();
+            } else if ("error".equals(status)) {
+                showToast("Failed to save. Please try again.");
+            }
+        });
     }
+
 
     /**
      * Finds and assigns the views from the fragment layout.
@@ -161,7 +175,7 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
         }
 
         if (userFeelingText.isEmpty()) {
-            showToast("Please describe your feeling before submitting.");
+            showToast("Please describe your feeling before saving.");
             return;
         }
 
@@ -188,12 +202,12 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
     /**
      * Resets all emotion icon backgrounds to transparent so only one icon appears selected.
      */
-    private void resetIconBackgrounds() {
-        iconHappy.setBackgroundColor(Color.TRANSPARENT);
-        iconSad.setBackgroundColor(Color.TRANSPARENT);
-        iconPressured.setBackgroundColor(Color.TRANSPARENT);
-        iconAngry.setBackgroundColor(Color.TRANSPARENT);
-    }
+//    private void resetIconBackgrounds() {
+//        iconHappy.setBackgroundColor(Color.TRANSPARENT);
+//        iconSad.setBackgroundColor(Color.TRANSPARENT);
+//        iconPressured.setBackgroundColor(Color.TRANSPARENT);
+//        iconAngry.setBackgroundColor(Color.TRANSPARENT);
+//    }
 
     /**
      * Shows a confirmation dialog before final submission.
@@ -201,18 +215,25 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
     private void showConfirmationDialog(@NonNull String feelingText) {
         new AlertDialog.Builder(requireContext())
                 .setTitle("Confirm Submission")
-                .setMessage("Are you sure you want to submit this feeling?\n\n" + feelingText)
-                .setPositiveButton("Yes", (dialog, which) -> handleSubmissionSuccess())
+//                .setMessage("Are you sure you want to save this feeling?\n\n" + feelingText)
+                .setMessage("Are you sure you want to save this entry?")
+                .setPositiveButton("Yes", (dialog, which) -> {
+                    persistHomeEntry(getEmotionString(selectedFeelingIconId), feelingText);
+                })
                 .setNegativeButton("Cancel", (dialog, which) -> dialog.dismiss())
                 .show();
     }
+
+
+
+
 
     /**
      * Runs after the user confirms submission.
      * This method currently shows a success message and resets the UI.
      */
     private void handleSubmissionSuccess() {
-        showToast("Submitted successfully!");
+        showToast("Entry Saved!");
         resetForm();
     }
 
@@ -221,12 +242,14 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
      */
     private void resetForm() {
         selectedFeelingIconId = 0;
-        resetIconBackgrounds();
+        clearIconSelections();
 
         if (textFeeling != null) {
             textFeeling.setText("");
         }
     }
+
+
 
     /**
      * Displays a short toast message safely using the fragment's context.
@@ -236,21 +259,34 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
     }
 
     private void persistHomeEntry(String selectedEmotion, String description) {
-        JournalRepository repo = new JournalRepository(requireContext());
-        SessionManager session = new SessionManager(requireContext());
-        long userId = session.getLoggedInUserId();
 
-        if (userId <= 0) {
-            Toast.makeText(requireContext(), "Please log in again.", Toast.LENGTH_LONG).show();
+        android.util.Log.d("HomeFragment", "persistHomeEntry called: emotion=" + selectedEmotion +
+                " userId=" + new SessionManager(requireContext()).getLoggedInUserId());
+
+        SessionManager session = new SessionManager(requireContext());
+        String userId = session.getLoggedInUserId();
+
+        if (userId == null) {
+            // This should not happen if MainActivity correctly guards the Dashboard,
+            // but it is good practice to handle it defensively.
+            showToast("Session expired. Please log in again.");
             return;
         }
-
-        AppExecutors.db().execute(() -> {
-            repo.addEntry(userId, selectedEmotion, description);
-            requireActivity().runOnUiThread(() ->
-                    Toast.makeText(requireContext(), "Submitted successfully!", Toast.LENGTH_LONG).show()
-            );
-        });
+        // Fragment -> ViewModel only. Repository is never touched directly from here.
+        // The ViewModel handles threading, UUID generation, Room insert, and Firestore push.
+        viewModel.saveEntry(userId, selectedEmotion, description);
     }
+
+    // Maps icon view ID → emotion string stored in Room/Firestore
+
+    private String getEmotionString(int iconId) {
+        if (iconId == R.id.happyIcon)     return "happy";
+        if (iconId == R.id.sadIcon)       return "sad";
+        if (iconId == R.id.pressuredIcon) return "pressured";
+        if (iconId == R.id.angryIcon)     return "angry";
+        return "unknown";
+    }
+
+
 
 }

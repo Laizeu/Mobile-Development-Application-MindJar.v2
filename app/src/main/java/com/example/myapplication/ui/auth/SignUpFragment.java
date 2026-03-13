@@ -25,11 +25,9 @@ import androidx.navigation.fragment.NavHostFragment;
 import com.example.myapplication.ui.Dashboard;
 import com.example.myapplication.R;
 import com.example.myapplication.data.repository.AuthRepository;
-import com.example.myapplication.data.SessionManager;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
 
-import com.example.myapplication.data.local.*;
 
 import java.util.regex.Pattern;
 
@@ -234,46 +232,38 @@ public class SignUpFragment extends Fragment {
                 return;
             }
 
-            // Proceed with signup (Room + BCrypt via AuthRepository)
+            // Proceed with signup using Firebase Auth via AuthRepository
             handleSignup(name, email, pass);
         });
     }
 
     /**
-     * Creates user in DB, sets session, then navigates to Dashboard
+     * Creates user via Firebase Auth, then navigates to Dashboard
      */
     private void handleSignup(String fullName, String email, String password) {
-        AuthRepository repo = new AuthRepository(requireContext());
-        SessionManager session = new SessionManager(requireContext());
+        AuthRepository repo = new AuthRepository();
 
-        AppExecutors.db().execute(() -> {
+        repo.createUser(fullName, email, password, new AuthRepository.AuthCallback() {
 
-            // 1) prevent duplicates by checking if email already in the database
-            boolean exists = repo.emailExists(email);
-
-            if (!isAdded()) return;
-
-            if (exists) {
-                requireActivity().runOnUiThread(() ->
-                        Toast.makeText(requireContext(), "Email already exists.", Toast.LENGTH_LONG).show()
-                );
-                return;
+            @Override
+            public void onSuccess() {
+                Toast.makeText(requireContext(),
+                        "Account created successfully!",
+                        Toast.LENGTH_LONG).show();
+                startActivity(new Intent(requireContext(), Dashboard.class));
+                requireActivity().finish();
             }
 
-            // 2) insert new user (repo should hash internally)
-            long newUserId = repo.createUser(fullName, email, password);
-
-            // 3) set session
-            session.setLoggedInUserId(newUserId);
-
-            // 4) move forward
-            requireActivity().runOnUiThread(() -> {
-                Toast.makeText(requireContext(), "Account created successfully!", Toast.LENGTH_LONG).show();
-                startActivity(new Intent(requireContext(), Dashboard.class));
-                requireActivity().finish(); // prevent back to auth
-            });
+            @Override
+            public void onError(String errorMessage) {
+                // Firebase returns readable messages like:
+                // "The email address is already in use by another account."
+                Toast.makeText(requireContext(),
+                        errorMessage, Toast.LENGTH_LONG).show();
+            }
         });
     }
+
 
     // ---------------- Validation Methods  ----------------
 
