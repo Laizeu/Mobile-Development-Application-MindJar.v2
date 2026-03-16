@@ -41,8 +41,7 @@ MindJar is an Android mental wellness journaling app that helps users log emotio
 
 ## Architecture
 
-The app follows strict MVVM. Fragments only observe LiveData — they never call repositories directly.
-
+The app follows Model-View-ViewModel (MVVM). 
 ```
 Fragment / Activity
     └── ViewModel          (survives rotation, holds LiveData)
@@ -51,7 +50,7 @@ Fragment / Activity
               └── Firebase       (Auth / Realtime DB / Firestore)
 ```
 
-**Cache-first pattern** — every screen serves the Room cache immediately for fast, offline-capable rendering. Firebase fetches run in the background and update the cache, which automatically notifies the UI via LiveData.
+**Cache-first pattern** — every screen serves the Room cache immediately for fast, offline-capable rendering. Firebase fetches run in the background.
 
 **Dual-write for journal entries** — entries are written to Room first (with a UUID as `firestoreId`), then pushed to Firestore asynchronously. `SyncJournalWorker` retries any entries where `syncedToFirebase = false`.
 
@@ -120,7 +119,7 @@ app/src/main/java/com/example/myapplication/
 
 ## Setup & Run
 
-### Requirements
+### Our Setup
 
 - Android Studio (latest stable)
 - Android SDK configured
@@ -138,7 +137,7 @@ app/src/main/java/com/example/myapplication/
    git clone https://github.com/your-username/MindJar.git
    ```
 2. Open the project in Android Studio
-3. Add your `google-services.json` to the `app/` directory
+3. Add `google-services.json` to the `app/` directory
 4. Let Gradle sync and finish building
 5. Connect an Android device or start an emulator (API 26+)
 6. Click **Run ▶️**
@@ -163,13 +162,6 @@ Firestore
             └── {firestoreId}/  { emotion, description, createdAtEpochMs, firestoreId }
 ```
 
-> **Note:** Hope screen images must be stored as `https://` download URLs in Realtime Database — not `gs://` Storage URIs.
+> **Note:** Hope screen images stored in Firebase Storage while video URL are store in Realtime Database
 
 ---
-
-## Known Limitations / In Progress
-
-- `fallbackToDestructiveMigration()` is used in Room — proper `Migration` objects are planned
-- Some fragments (Home, Login, SignUp) still have minor MVVM boundary violations being resolved
-- No unit or integration tests currently (planned)
-- YouTube Data API v3 integration for the Videos screen is designed but not yet implemented
