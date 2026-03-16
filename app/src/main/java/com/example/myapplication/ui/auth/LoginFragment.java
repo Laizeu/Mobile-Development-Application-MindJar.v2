@@ -39,6 +39,7 @@ import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.common.api.ApiException;
 import com.google.android.gms.tasks.Task;
+import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
 
@@ -46,7 +47,6 @@ import com.example.myapplication.data.repository.AuthRepository;
 
 /**
  * LoginFragment handles the Login UI and validation logic.
- *
  * Login validation rules
  * - Email: Required + valid email format</li>
  * - Password: Required only</li>
@@ -72,7 +72,7 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
     private GoogleSignInClient googleSignInClient; // null if Google auth is not configured
 
     private final AuthRepository repo = new AuthRepository();
-
+    private TextView txtForgotPassword;
 
     public LoginFragment() {
         // Required empty public constructor
@@ -116,8 +116,8 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
         editEmail = root.findViewById(R.id.editEmail);
         editPassword = root.findViewById(R.id.editPassword);
 
-        // NOTE: Your checkbox id is "checkBox" in XML.
         checkShowPassword = root.findViewById(R.id.checkBox);
+        txtForgotPassword = root.findViewById(R.id.textForgotPassword);
 
         //Google Auth
         iconGoogle = root.findViewById(R.id.iconGoogle);
@@ -153,6 +153,10 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
                 Intent signInIntent = googleSignInClient.getSignInIntent();
                 googleSignInLauncher.launch(signInIntent);
             });
+        }
+
+        if (txtForgotPassword != null) {
+            txtForgotPassword.setOnClickListener(v -> showForgotPasswordDialog());
         }
     }
 
@@ -411,5 +415,48 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
                 }
             });
 
+    private void showForgotPasswordDialog() {
+        TextInputLayout layout = new TextInputLayout(requireContext());
+        layout.setHint("Email address");
 
+        TextInputEditText emailInput = new TextInputEditText(requireContext());
+        emailInput.setInputType(android.text.InputType.TYPE_TEXT_VARIATION_EMAIL_ADDRESS);
+        layout.addView(emailInput);
+
+        int padding = (int) (16 * getResources().getDisplayMetrics().density);
+        layout.setPadding(padding, padding, padding, 0);
+
+        new MaterialAlertDialogBuilder(requireContext())
+                .setTitle("Reset Password")
+                .setMessage("Enter your account email and we'll send you a reset link.")
+                .setView(layout)
+                .setPositiveButton("Send", (dialog, which) -> {
+                    String email = emailInput.getText() == null ? ""
+                            : emailInput.getText().toString().trim();
+
+                    if (email.isEmpty() || !Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
+                        layout.setError("Enter a valid email");
+                        return;   // keep dialog open
+                    }
+
+                    AuthRepository repo = new AuthRepository();
+                    repo.sendPasswordReset(email, new AuthRepository.AuthCallback() {
+                        @Override
+                        public void onSuccess() {
+                            Toast.makeText(requireContext(),
+                                    "Reset link sent — check your inbox.",
+                                    Toast.LENGTH_LONG).show();
+                        }
+
+                        @Override
+                        public void onError(String errorMessage) {
+                            Toast.makeText(requireContext(),
+                                    "Error: " + errorMessage,
+                                    Toast.LENGTH_LONG).show();
+                        }
+                    });
+                })
+                .setNegativeButton("Cancel", null)
+                .show();
+    }
 }

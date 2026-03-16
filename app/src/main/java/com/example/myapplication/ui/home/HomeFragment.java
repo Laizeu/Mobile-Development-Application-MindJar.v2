@@ -20,6 +20,7 @@ import com.example.myapplication.ui.MainActivity;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
+import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.android.material.textfield.TextInputEditText;
 
 
@@ -237,7 +238,7 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
      * Shows a confirmation dialog before final submission.
      */
     private void showConfirmationDialog(@NonNull String feelingText) {
-        new AlertDialog.Builder(requireContext())
+        new MaterialAlertDialogBuilder(requireContext())
                 .setTitle("Confirm Submission")
 //                .setMessage("Are you sure you want to save this feeling?\n\n" + feelingText)
                 .setMessage("Are you sure you want to save this entry?")
@@ -358,7 +359,7 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
      * Reuses the same AlertDialog pattern already in the fragment.
      */
     private void showLogoutConfirmation() {
-        new AlertDialog.Builder(requireContext())
+        new MaterialAlertDialogBuilder(requireContext())
                 .setTitle("Log Out")
                 .setMessage("Are you sure you want to log out?")
                 .setPositiveButton("Log Out", (d, w) -> performLogout())

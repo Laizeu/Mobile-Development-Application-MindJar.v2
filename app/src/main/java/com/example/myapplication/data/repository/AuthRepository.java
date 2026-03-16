@@ -76,4 +76,11 @@ public class AuthRepository {
                 });
     }
 
+
+    public void sendPasswordReset(String email, AuthCallback callback) {
+        FirebaseAuth.getInstance()
+                .sendPasswordResetEmail(email)
+                .addOnSuccessListener(unused -> callback.onSuccess())
+                .addOnFailureListener(e -> callback.onError(e.getMessage()));
+    }
 }

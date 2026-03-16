@@ -1,28 +1,68 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+
+    <!-- ═══════════════════════════════════════════════════ -->
+    <!-- BASE COLORS                                         -->
+    <!-- ═══════════════════════════════════════════════════ -->
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
     <color name="gray">#555555</color>
     <color name="logout">#FF000000</color>
+
+    <!-- ═══════════════════════════════════════════════════ -->
+    <!-- DIALOG COLORS                                       -->
+    <!-- ═══════════════════════════════════════════════════ -->
+    <color name="dialogboxText">#FFFFFFFF</color>
+    <color name="dialogbox_background">#1E1E2E</color>
+    <!-- ═══════════════════════════════════════════════════ -->
+    <!-- LIGHT THEME — Surface & Background                  -->
+    <!-- ═══════════════════════════════════════════════════ -->
+    <color name="background_light">#FDFFF8</color>
+    <color name="on_surface_light">#1A1C18</color>
+
+    <!-- ═══════════════════════════════════════════════════ -->
+    <!-- LIGHT THEME — Brand / Primary                       -->
+    <!-- ═══════════════════════════════════════════════════ -->
+    <color name="button_green">#73903F</color>
+    <color name="on_primary">#FFFFFF</color>
+    <color name="card_happy">#C5D8A4</color>
+    <color name="on_primary_container">#1E2E00</color>
+    <!-- ═══════════════════════════════════════════════════ -->
+    <!-- NIGHT THEME — Brand / Primary                       -->
+    <!-- ═══════════════════════════════════════════════════ -->
+    <color name="primary_night">#A8C472</color>
+    <color name="on_primary_night">#1E2E00</color>
+    <color name="primary_container_night">#3D5A00</color>
+
+    <!-- ═══════════════════════════════════════════════════ -->
+    <!-- NIGHT THEME — Surface & Background                  -->
+    <!-- ═══════════════════════════════════════════════════ -->
+    <color name="surface_night">#1A1C18</color>
+    <color name="on_surface_night">#E2E3DC</color>
+    <color name="background_night">#121411</color>
+
+    <!-- ═══════════════════════════════════════════════════ -->
+    <!-- SCREEN BACKGROUND TINTS                             -->
+    <!-- ═══════════════════════════════════════════════════ -->
     <color name="video_background">#EAF2FF</color>
     <color name="hotline_background">#EAF2FF</color>
     <color name="journal_background">#EAF2FF</color>
     <color name="image_background">#EAF2FF</color>
 
-    <!-- Background and general thme colors -->
-    <color name="background_light">#FDFFF8</color>
-    <color name="button_green">#73903F</color>
-
-    <!-- Card background colors -->
-    <color name="card_happy">#C5D8A4</color>
+    <!-- ═══════════════════════════════════════════════════ -->
+    <!-- EMOTION CARD COLORS                                 -->
+    <!-- ═══════════════════════════════════════════════════ -->
     <color name="card_relieved">#FFB8C7</color>
     <color name="card_sad">#CBE2FF</color>
     <color name="card_loved">#FFC7B6</color>
+
+    <!-- ═══════════════════════════════════════════════════ -->
+    <!-- MISC                                                -->
+    <!-- ═══════════════════════════════════════════════════ -->
     <color name="light_blue_600">#FF039BE5</color>
     <color name="light_blue_900">#FF01579B</color>
     <color name="light_blue_A200">#FF40C4FF</color>
     <color name="light_blue_A400">#FF00B0FF</color>
     <color name="black_overlay">#66000000</color>
 
-    <!-- Nav Color -->
 </resources>

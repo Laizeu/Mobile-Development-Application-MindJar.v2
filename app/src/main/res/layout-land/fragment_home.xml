@@ -369,19 +369,6 @@
                     app:layout_constraintStart_toStartOf="@id/rightPanelLeft"
                     app:layout_constraintEnd_toStartOf="@id/rightPanelRight">
 
-                    <ImageView
-                        android:id="@+id/imageView7"
-                        android:layout_width="38dp"
-                        android:layout_height="match_parent"
-                        android:contentDescription="@string/cd_microphone"
-                        android:src="@drawable/microphone" />
-
-                    <ImageView
-                        android:id="@+id/imageView8"
-                        android:layout_width="32dp"
-                        android:layout_height="match_parent"
-                        android:contentDescription="@string/cd_upload"
-                        android:src="@drawable/upload" />
                 </LinearLayout>
 
                 <!-- Send Button -->

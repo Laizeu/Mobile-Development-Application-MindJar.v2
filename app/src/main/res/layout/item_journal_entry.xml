@@ -22,16 +22,15 @@
         >
 
         <!-- LEFT — emotion icon/label -->
-        <TextView
-            android:id="@+id/txtEmotion"
-            android:layout_width="72dp"
-            android:layout_height="72dp"
-            android:gravity="center"
-            android:textStyle="bold"
-            android:textSize="13sp"
-            android:textColor="#FFFFFF"
-            android:background="@drawable/circle_emotion_bg"
-            android:text="Emotion" />
+        <ImageView
+        android:id="@+id/txtEmotion"
+        android:layout_width="56dp"
+        android:layout_height="56dp"
+        android:padding="8dp"
+        android:scaleType="centerInside"
+        android:background="@drawable/bg_emotion_ripple"
+        android:src="@drawable/slightly_happy"
+        android:contentDescription="Emotion icon" />
 
         <!-- RIGHT — date on top, description below -->
         <LinearLayout

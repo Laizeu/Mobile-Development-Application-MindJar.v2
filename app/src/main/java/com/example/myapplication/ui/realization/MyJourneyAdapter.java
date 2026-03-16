@@ -4,6 +4,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.widget.ImageView;
+
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
@@ -50,7 +52,7 @@ public class MyJourneyAdapter extends RecyclerView.Adapter<MyJourneyAdapter.Entr
         JournalEntryEntity entry = entries.get(position);
 
         // Display the emotion
-        holder.txtEmotion.setText(entry.emotion);
+        holder.imgEmotion.setImageResource(getEmotionDrawable(entry.emotion));
 
         // Display a preview of the description
         holder.txtPreview.setText(entry.description);
@@ -75,16 +77,33 @@ public class MyJourneyAdapter extends RecyclerView.Adapter<MyJourneyAdapter.Entr
     }
 
     static class EntryViewHolder extends RecyclerView.ViewHolder {
-        TextView txtEmotion;
+        ImageView imgEmotion;   // changed: was TextView txtEmotion
         TextView txtPreview;
-        TextView txtDate;    // <-- ADD THIS
+        TextView txtDate;
 
         EntryViewHolder(View itemView) {
             super(itemView);
-            txtEmotion = itemView.findViewById(R.id.txtEmotion);
+            imgEmotion = itemView.findViewById(R.id.txtEmotion); // same id
             txtPreview = itemView.findViewById(R.id.txtPreview);
-            txtDate = itemView.findViewById(R.id.txtDate);    // <-- ADD THIS
-            // Make sure R.id.txtDate exists in item_journal_entry.xml
+            txtDate = itemView.findViewById(R.id.txtDate);
         }
+
     }
+
+    private static int getEmotionDrawable(@NonNull String emotion) {
+        switch (emotion) {
+            case "happy":
+                return R.drawable.slightly_happy;
+            case "sad":
+                return R.drawable.sad;
+            case "pressured":
+                return R.drawable.scrunched_eyes;
+            case "angry":
+                return R.drawable.rage;
+            default:
+                return R.drawable.slightly_happy;
+        }
+
+    }
+
 }

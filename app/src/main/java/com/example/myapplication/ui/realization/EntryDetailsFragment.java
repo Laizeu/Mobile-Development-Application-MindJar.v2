@@ -5,6 +5,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 import androidx.annotation.NonNull;
@@ -16,6 +17,8 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.Navigation;
 import com.example.myapplication.R;
 import com.example.myapplication.data.local.entity.JournalEntryEntity;
+import com.google.android.material.dialog.MaterialAlertDialogBuilder;
+
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
@@ -25,6 +28,8 @@ public class EntryDetailsFragment extends Fragment {
     private EntryDetailsViewModel viewModel;
     private Button btnDelete;
     private Button btnEdit;
+
+    private ImageView imgDetailEmotion;
 
     public EntryDetailsFragment() {}
 
@@ -83,17 +88,30 @@ public class EntryDetailsFragment extends Fragment {
     private void bindEntry(@NonNull View view,
                            @NonNull JournalEntryEntity entry) {
         TextView txtDate        = view.findViewById(R.id.txtDetailDate);
-        TextView txtEmotion     = view.findViewById(R.id.txtDetailEmotion);
         TextView txtDescription = view.findViewById(R.id.txtDetailDescription);
+        imgDetailEmotion        = view.findViewById(R.id.txtDetailEmotion); // ← initialize here
 
         SimpleDateFormat sdf = new SimpleDateFormat(
                 "MMM dd, yyyy  ·  hh:mm a", Locale.getDefault());
         txtDate.setText(sdf.format(new Date(entry.createdAtEpochMs)));
-        txtEmotion.setText(entry.emotion);
+        imgDetailEmotion.setImageResource(getEmotionDrawable(entry.emotion));
         txtDescription.setText(entry.description);
     }
 
-    // ── Edit button ───────────────────────────────────────────────
+    // ── Emotion drawable helper ───────────────────────────────────
+    // Maps the stored emotion string to its corresponding drawable resource.
+    // Falls back to slightly_happy for any unknown value — prevents crashes.
+    private static int getEmotionDrawable(@NonNull String emotion) {
+        switch (emotion) {
+            case "happy":     return R.drawable.slightly_happy;
+            case "sad":       return R.drawable.sad;
+            case "pressured": return R.drawable.scrunched_eyes;
+            case "angry":     return R.drawable.rage;
+            default:          return R.drawable.slightly_happy;
+        }
+    }
+
+     // ── Edit button ───────────────────────────────────────────────
     private void setupEditButton(long entryId) {
         btnEdit.setOnClickListener(v -> {
             Bundle args = new Bundle();
@@ -110,7 +128,7 @@ public class EntryDetailsFragment extends Fragment {
         btnDelete.setEnabled(true);
         btnDelete.setOnClickListener(v -> {
             btnDelete.setEnabled(false);
-            new AlertDialog.Builder(requireContext())
+            new MaterialAlertDialogBuilder(requireContext())
                     .setTitle("Delete Entry")
                     .setMessage(
                             "This entry will be permanently deleted and cannot be recovered.")

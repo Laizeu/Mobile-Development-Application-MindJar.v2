@@ -256,22 +256,7 @@
             android:orientation="horizontal"
             app:layout_constraintTop_toBottomOf="@id/textInputLayout"
             app:layout_constraintEnd_toStartOf="@id/verticalConstraint2"
-            app:layout_constraintStart_toStartOf="@id/verticalConstraint1">
-
-            <ImageView
-                android:id="@+id/imageView7"
-                android:layout_width="46dp"
-                android:layout_height="match_parent"
-                android:src="@drawable/microphone"
-                android:contentDescription="@string/cd_microphone" />
-
-            <ImageView
-                android:id="@+id/imageView8"
-                android:layout_width="35dp"
-                android:layout_height="match_parent"
-                android:src="@drawable/upload"
-                android:contentDescription="@string/cd_upload" />
-        </LinearLayout>
+            app:layout_constraintStart_toStartOf="@id/verticalConstraint1"/>
 
         <Button
             android:id="@+id/button"
