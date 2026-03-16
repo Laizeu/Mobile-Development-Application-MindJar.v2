@@ -1,103 +1,175 @@
 # MindJar
-MindJar is a mobile application designed to help users reflect on their emotions and thoughts. 
-The app allows users to log in, select how they are feeling, and write down their thoughts in a simple and organized way. 
-It focuses on promoting self-awareness through a clean interface and easy navigation. 
+
+MindJar is an Android mental wellness journaling app that helps users log emotions, reflect on their thoughts, and access mental health resources. Users can record how they're feeling, browse their journal history, view motivational images, watch curated wellness videos, and reach out to crisis hotlines — all with offline support.
+
+---
 
 ## Features
-- Login screen with email and password validation
-- Real-time input validation with helper text and toast messages
-- Emotion selection on the dashboard
-- Text input for writing thoughts and feelings
-- Fragment-based navigation
-- Bottom navigation bar for switching screens
-- Back stack handling for smooth navigation flow
-- Simple and user-friendly UI design
+
+- **Emotion Logging** — Select from Happy, Sad, Pressured, or Angry and write a short description
+- **Journal Feed** — Browse past entries sorted by newest first; tap any entry to view details
+- **Edit & Delete Entries** — Update or remove journal entries with confirmation dialogs
+- **Cloud Sync** — Entries are backed up to Firestore and restored across devices
+- **Hope Screen** — Image carousel loaded from Firebase Storage with Room caching
+- **Videos Screen** — Curated YouTube wellness videos loaded from Firebase Realtime Database
+- **Hotline Screen** — Crisis contact cards with tap-to-call, email, and Facebook links
+- **Google Sign-In** — Sign in with email/password or Google account
+- **Offline-First** — All screens serve Room cache instantly; Firebase refreshes in background
+- **Background Sync** — WorkManager retries any unsynced journal entries automatically
+- **Slide Menu & Logout** — Animated side panel on Home screen with logout confirmation
+- **Portrait & Landscape** — All screens have dedicated layout variants
+
+---
 
 ## Tech Stack
-- Platform: Android
-- Language: Java
-- UI Design: XML (ConstraintLayout)
-- IDE: Android Studio
-- Design Components: Material Design Components
 
-## Setup & Run
-1. Follow these steps to run the project locally:
-2. Clone or download the project repository
-3. Open Android Studio
-4. Click Open and select the MindJar project folder
-5. Allow Gradle to sync and finish building
-6. Connect an Android device or start an emulator
-7. Click Run ▶️ to launch the app
+| Category | Technology |
+|---|---|
+| Language | Java |
+| Architecture | MVVM (ViewModel + LiveData + Repository) |
+| Authentication | Firebase Auth — email/password + Google Sign-In |
+| Cloud Database | Cloud Firestore — journal entry backup & sync |
+| Realtime Database | Firebase Realtime Database — videos, hotlines, hope images |
+| Storage | Firebase Storage — hope screen images |
+| Local Cache | Room (SQLite) — offline-first persistence |
+| Navigation | Navigation Component — fragment back stack, nav graph |
+| Background Sync | WorkManager — retry unsynced entries |
+| Image Loading | Glide |
+| UI | Material Design 3 |
 
-Requirements:
-- Android Studio installed
-- Android SDK configured
-- Emulator or physical Android device
+---
 
-```bash
-MindJar/
-│
-├── app/
-│   ├── src/
-│   │   ├── main/
-│   │   │   ├── java/com/example
-│   │   │   │   ├── myapplication/
-│   │   │   │   │   ├── LoginActivity.java
-│   │   │   │   │   ├── SignUpActivity.java
-│   │   │   │   │   ├──  DashboardActivity.java
-│   │   │   │   │   ├── HomeFragment.java
-│   │   │   │   │   ├──  RealizationFragment.java
-│   │   │   │   │   ├── HopeFragment.java
-│   │   │   │   │   ├──  VideosFragment.java
-│   │   │   │   │   ├── HotlineFragment.java
-│   │   │   │   │   ├── MyJourneyFragment.java
-│   │   │   │   │   └── EntryDetails.java
-│   │   │   │   
-│   │   │   │
-│   │   │   ├── res/
-│   │   │   │   ├── layout/
-│   │   │   │   │   ├── activity_sign_up.xml
-│   │   │   │   │   ├── activity_dashboard.xml
-│   │   │   │   │   ├── activity_main.xml
-│   │   │   │   │   ├── fragment_home.xml
-│   │   │   │   │   ├── fragment_hope.xml
-│   │   │   │   │   ├── fragment_hotline.xml
-│   │   │   │   │   ├── fragment_my_journey.xml
-│   │   │   │   │   ├── fragment_realization.xml
-│   │   │   │   │   ├── fragment_videos.xml
-│   │   │   │   │   └──fragment_entry_details.xml
-│   │   │   │   │
-│   │   │   │   ├── layout-land/
-│   │   │   │   │   ├── activity_sign_up.xml
-│   │   │   │   │   ├── activity_dashboard.xml
-│   │   │   │   │   ├── activity_main.xml
-│   │   │   │   │   ├── fragment_home.xml
-│   │   │   │   │   ├── fragment_hope.xml
-│   │   │   │   │   ├── fragment_hotline.xml
-│   │   │   │   │   ├── fragment_my_journey.xml
-│   │   │   │   │   ├── fragment_realization.xml
-│   │   │   │   │   ├── fragment_videos.xml
-│   │   │   │   │   └──fragment_entry_details.xml
-│   │   │   │   │
-│   │   │   │   │   
-│   │   │   │   ├── drawable/
-│   │   │   │   ├── values/
-│   │   │   │   │   ├── colors.xml
-│   │   │   │   │   ├── strings.xml
-│   │   │   │   │   └── themes.xml
-│   │   │   │
-│   │   │   └── AndroidManifest.xml
-│   │   │
-│   │   └── test/
-│   │
-│   └── build.gradle
-│
-├── gradle/
-├── build.gradle
-├── settings.gradle
-└── README.md
+## Architecture
+
+The app follows strict MVVM. Fragments only observe LiveData — they never call repositories directly.
+
+```
+Fragment / Activity
+    └── ViewModel          (survives rotation, holds LiveData)
+         └── Repository    (cache-first: Room → Firebase)
+              ├── Room DAOs      (instant offline reads/writes)
+              └── Firebase       (Auth / Realtime DB / Firestore)
 ```
 
+**Cache-first pattern** — every screen serves the Room cache immediately for fast, offline-capable rendering. Firebase fetches run in the background and update the cache, which automatically notifies the UI via LiveData.
 
+**Dual-write for journal entries** — entries are written to Room first (with a UUID as `firestoreId`), then pushed to Firestore asynchronously. `SyncJournalWorker` retries any entries where `syncedToFirebase = false`.
 
+---
 
+## Project Structure
+
+```
+app/src/main/java/com/example/myapplication/
+│
+├── ui/
+│   ├── MainActivity.java                  # Auth host activity
+│   ├── Dashboard.java                     # App host with bottom navigation
+│   ├── auth/
+│   │   ├── LoginFragment.java
+│   │   └── SignUpFragment.java
+│   ├── home/
+│   │   ├── HomeFragment.java              # Emotion logging + slide menu
+│   │   └── HomeViewModel.java
+│   ├── realization/
+│   │   ├── RealizationFragment.java       # Journal feed
+│   │   ├── RealizationViewModel.java
+│   │   ├── EntryDetailsFragment.java      # View single entry
+│   │   ├── EntryDetailsViewModel.java
+│   │   ├── EditEntryFragment.java         # Edit entry
+│   │   └── EditEntryViewModel.java
+│   ├── hope/
+│   │   ├── HopeFragment.java              # Image carousel
+│   │   └── HopeViewModel.java
+│   ├── videos/
+│   │   ├── VideosFragment.java
+│   │   ├── VideoViewModel.java
+│   │   └── VideoAdapter.java
+│   └── hotline/
+│       ├── HotlineFragment.java
+│       ├── HotlineViewModel.java
+│       └── HotlineAdapter.java
+│
+├── data/
+│   ├── SessionManager.java                # Firebase UID access, logout
+│   └── repository/
+│       ├── AuthRepository.java
+│       ├── JournalRepository.java         # Room + Firestore dual-write
+│       ├── HopeRepository.java
+│       ├── VideoRepository.java
+│       └── HotlineRepository.java
+│
+├── data/local/
+│   ├── AppDatabase.java                   # Room database (v12)
+│   ├── AppExecutors.java
+│   ├── dao/
+│   │   ├── JournalEntryDao.java
+│   │   ├── VideoDao.java
+│   │   └── HotlineDao.java
+│   └── entity/
+│       ├── JournalEntryEntity.java
+│       ├── VideoEntity.java
+│       ├── HotlineEntity.java
+│       └── HotlineEntry.java
+│
+└── util/
+    └── SyncJournalWorker.java             # WorkManager background sync
+```
+
+---
+
+## Setup & Run
+
+### Requirements
+
+- Android Studio (latest stable)
+- Android SDK configured
+- A Firebase project with the following services enabled:
+  - Firebase Authentication (Email/Password + Google)
+  - Cloud Firestore
+  - Firebase Realtime Database
+  - Firebase Storage
+- `google-services.json` placed in `app/`
+
+### Steps
+
+1. Clone the repository
+   ```bash
+   git clone https://github.com/your-username/MindJar.git
+   ```
+2. Open the project in Android Studio
+3. Add your `google-services.json` to the `app/` directory
+4. Let Gradle sync and finish building
+5. Connect an Android device or start an emulator (API 26+)
+6. Click **Run ▶️**
+
+---
+
+## Firebase Data Structure
+
+```
+Realtime Database
+├── hope_images/
+│   └── image_1/  { url, order }
+├── videos/
+│   └── vid_1/    { videoId, title, order }
+└── hotlines/
+    └── entry_1/  { name, phone, email, facebookUrl, order }
+
+Firestore
+└── journal_entries/
+    └── {userId}/
+        └── entries/
+            └── {firestoreId}/  { emotion, description, createdAtEpochMs, firestoreId }
+```
+
+> **Note:** Hope screen images must be stored as `https://` download URLs in Realtime Database — not `gs://` Storage URIs.
+
+---
+
+## Known Limitations / In Progress
+
+- `fallbackToDestructiveMigration()` is used in Room — proper `Migration` objects are planned
+- Some fragments (Home, Login, SignUp) still have minor MVVM boundary violations being resolved
+- No unit or integration tests currently (planned)
+- YouTube Data API v3 integration for the Videos screen is designed but not yet implemented
