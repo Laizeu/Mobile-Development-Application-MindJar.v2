@@ -1,5 +1,8 @@
 package com.example.myapplication.ui.realization;
 
+import android.content.Context;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -95,6 +98,19 @@ public class RealizationFragment extends Fragment {
     private void setupSyncButton(@NonNull View root) {
         Button btn = root.findViewById(R.id.button);
         btn.setOnClickListener(v -> {
+
+            // Check for an active internet connection before attempting sync.
+            ConnectivityManager cm = (ConnectivityManager)
+                    requireContext().getSystemService(Context.CONNECTIVITY_SERVICE);
+            NetworkInfo netInfo = cm.getActiveNetworkInfo();
+
+            if (netInfo == null || !netInfo.isConnected()) {
+                Toast.makeText(requireContext(),
+                        "No internet connection.",
+                        Toast.LENGTH_SHORT).show();
+                return; // abort — button stays enabled, cached list stays visible
+            }
+
             btn.setEnabled(false);
             btn.setText("Syncing...");
             viewModel.loadEntriesWithRestore(() -> {
@@ -103,6 +119,7 @@ public class RealizationFragment extends Fragment {
             });
         });
     }
+
 
     private void openEntryDetails(@NonNull JournalEntryEntity entry) {
         Bundle args = new Bundle();

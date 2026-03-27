@@ -1,164 +1,164 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.core.widget.NestedScrollView
+<androidx.constraintlayout.widget.ConstraintLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:fillViewport="true">
+    android:layout_height="match_parent">
 
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:layout_width="match_parent"
+    <!-- TOOLBAR -->
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/toolbar"
+        android:layout_width="0dp"
+        android:layout_height="?attr/actionBarSize"
+        android:background="@color/button_green"
+        android:paddingTop="10dp"
+        android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
+        app:title="Edit Entry"
+        app:navigationIcon="@drawable/ic_arrow_back"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+    <!-- EMOTION LABEL -->
+    <TextView
+        android:id="@+id/labelEmotion"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        >
+        android:layout_marginTop="24dp"
+        android:layout_marginStart="20dp"
+        android:layout_marginEnd="20dp"
+        android:text="How are you feeling?"
+        android:textStyle="bold"
+        android:textSize="14sp"
+        app:layout_constraintTop_toBottomOf="@id/toolbar"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
 
-        <!-- TOOLBAR -->
-        <androidx.appcompat.widget.Toolbar
-            android:id="@+id/toolbar"
+    <!-- EMOTION ICON ROW -->
+    <LinearLayout
+        android:id="@+id/emotionRow"
+        android:layout_width="0dp"
+        android:layout_height="72dp"
+        android:layout_marginTop="12dp"
+        android:layout_marginStart="20dp"
+        android:layout_marginEnd="20dp"
+        android:orientation="horizontal"
+        app:layout_constraintTop_toBottomOf="@id/labelEmotion"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
+
+        <ImageView
+            android:id="@+id/editHappyIcon"
             android:layout_width="0dp"
-            android:layout_height="?attr/actionBarSize"
-            android:background="@color/button_green"
-            android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
-            app:title="Edit Entry"
-            app:navigationIcon="@drawable/ic_arrow_back"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent" />
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:layout_margin="5dp"
+            android:padding="12dp"
+            android:scaleType="centerInside"
+            android:background="@drawable/bg_emotion_ripple"
+            android:src="@drawable/slightly_happy"
+            android:clickable="true"
+            android:focusable="true"
+            android:contentDescription="@string/cd_happy" />
 
-        <!-- EMOTION LABEL -->
-        <TextView
-            android:id="@+id/labelEmotion"
+        <ImageView
+            android:id="@+id/editSadIcon"
             android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="24dp"
-            android:layout_marginStart="20dp"
-            android:layout_marginEnd="20dp"
-            android:text="How are you feeling?"
-            android:textStyle="bold"
-            android:textSize="14sp"
-            app:layout_constraintTop_toBottomOf="@id/toolbar"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent" />
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:layout_margin="5dp"
+            android:padding="12dp"
+            android:scaleType="centerInside"
+            android:background="@drawable/bg_emotion_ripple"
+            android:src="@drawable/sad"
+            android:clickable="true"
+            android:focusable="true"
+            android:contentDescription="@string/cd_sad" />
 
-        <!-- EMOTION ICON ROW — same drawables as Home screen -->
-        <LinearLayout
-            android:id="@+id/emotionRow"
+        <ImageView
+            android:id="@+id/editPressuredIcon"
             android:layout_width="0dp"
-            android:layout_height="72dp"
-            android:layout_marginTop="12dp"
-            android:layout_marginStart="20dp"
-            android:layout_marginEnd="20dp"
-            android:orientation="horizontal"
-            app:layout_constraintTop_toBottomOf="@id/labelEmotion"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent">
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:layout_margin="5dp"
+            android:padding="12dp"
+            android:scaleType="centerInside"
+            android:background="@drawable/bg_emotion_ripple"
+            android:src="@drawable/scrunched_eyes"
+            android:clickable="true"
+            android:focusable="true"
+            android:contentDescription="@string/cd_pressured" />
 
-            <ImageView
-                android:id="@+id/editHappyIcon"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:layout_margin="5dp"
-                android:padding="12dp"
-                android:scaleType="centerInside"
-                android:background="@drawable/bg_emotion_ripple"
-                android:src="@drawable/slightly_happy"
-                android:clickable="true"
-                android:focusable="true"
-                android:contentDescription="@string/cd_happy" />
-
-            <ImageView
-                android:id="@+id/editSadIcon"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:layout_margin="5dp"
-                android:padding="12dp"
-                android:scaleType="centerInside"
-                android:background="@drawable/bg_emotion_ripple"
-                android:src="@drawable/sad"
-                android:clickable="true"
-                android:focusable="true"
-                android:contentDescription="@string/cd_sad" />
-
-            <ImageView
-                android:id="@+id/editPressuredIcon"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:layout_margin="5dp"
-                android:padding="12dp"
-                android:scaleType="centerInside"
-                android:background="@drawable/bg_emotion_ripple"
-                android:src="@drawable/scrunched_eyes"
-                android:clickable="true"
-                android:focusable="true"
-                android:contentDescription="@string/cd_pressured" />
-
-            <ImageView
-                android:id="@+id/editAngryIcon"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:layout_margin="5dp"
-                android:padding="12dp"
-                android:scaleType="centerInside"
-                android:background="@drawable/bg_emotion_ripple"
-                android:src="@drawable/rage"
-                android:clickable="true"
-                android:focusable="true"
-                android:contentDescription="@string/cd_angry" />
-        </LinearLayout>
-
-        <!-- DESCRIPTION LABEL -->
-        <TextView
-            android:id="@+id/labelDescription"
+        <ImageView
+            android:id="@+id/editAngryIcon"
             android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="24dp"
-            android:layout_marginStart="20dp"
-            android:layout_marginEnd="20dp"
-            android:text="Description"
-            android:textStyle="bold"
-            android:textSize="14sp"
-            app:layout_constraintTop_toBottomOf="@id/emotionRow"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent" />
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:layout_margin="5dp"
+            android:padding="12dp"
+            android:scaleType="centerInside"
+            android:background="@drawable/bg_emotion_ripple"
+            android:src="@drawable/rage"
+            android:clickable="true"
+            android:focusable="true"
+            android:contentDescription="@string/cd_angry" />
+    </LinearLayout>
 
-        <!-- DESCRIPTION EDIT TEXT -->
-        <EditText
-            android:id="@+id/editDescription"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:layout_marginStart="20dp"
-            android:layout_marginEnd="20dp"
-            android:minLines="5"
-            android:gravity="top"
-            android:inputType="textMultiLine"
-            android:hint="Describe your feeling..."
-            android:textSize="16sp"
-            android:lineSpacingMultiplier="1.4"
-            android:background="@android:drawable/edit_text"
-            app:layout_constraintTop_toBottomOf="@id/labelDescription"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent" />
+    <!-- DESCRIPTION LABEL -->
+    <TextView
+        android:id="@+id/labelDescription"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="24dp"
+        android:layout_marginStart="20dp"
+        android:layout_marginEnd="20dp"
+        android:text="Description"
+        android:textStyle="bold"
+        android:textSize="14sp"
+        app:layout_constraintTop_toBottomOf="@id/emotionRow"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
 
-        <!-- SAVE BUTTON -->
-        <Button
-            android:id="@+id/btnSave"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="20dp"
-            android:layout_marginEnd="20dp"
-            android:layout_marginBottom="24dp"
-            android:text="Save Changes"
-            android:textColor="@android:color/white"
-            android:backgroundTint="@color/button_green"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent" />
+    <!--
+        EditText locked between label and Save button (height=0dp).
+        NestedScrollView has been removed — it was stealing touch events
+        and preventing the field from scrolling. inputType="textMultiLine"
+        now handles internal scroll natively, same as the landscape version.
+    -->
+    <EditText
+        android:id="@+id/editDescription"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginStart="20dp"
+        android:layout_marginEnd="20dp"
+        android:layout_marginBottom="12dp"
+        android:gravity="top"
+        android:inputType="textMultiLine"
+        android:scrollbars="vertical"
+        android:overScrollMode="always"
+        android:hint="Describe your feeling..."
+        android:textSize="16sp"
+        android:lineSpacingMultiplier="1.4"
+        android:background="@android:drawable/edit_text"
+        app:layout_constraintTop_toBottomOf="@id/labelDescription"
+        app:layout_constraintBottom_toTopOf="@id/btnSave"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
 
+    <!-- SAVE BUTTON -->
+    <Button
+        android:id="@+id/btnSave"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="20dp"
+        android:layout_marginEnd="20dp"
+        android:layout_marginBottom="24dp"
+        android:text="Save Changes"
+        android:textColor="@android:color/white"
+        android:backgroundTint="@color/button_green"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
 
-
-    </androidx.constraintlayout.widget.ConstraintLayout>
-</androidx.core.widget.NestedScrollView>
+</androidx.constraintlayout.widget.ConstraintLayout>

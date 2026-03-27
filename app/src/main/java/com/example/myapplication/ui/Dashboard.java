@@ -21,6 +21,8 @@ import androidx.work.ExistingPeriodicWorkPolicy;
 import androidx.work.NetworkType;
 import androidx.work.PeriodicWorkRequest;
 import androidx.work.WorkManager;
+
+import com.example.myapplication.data.repository.ProfileRepository;
 import com.example.myapplication.util.SyncJournalWorker;
 import java.util.concurrent.TimeUnit;
 
@@ -68,6 +70,7 @@ public class Dashboard extends AppCompatActivity implements View.OnClickListener
 
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_dashboard);
+        new ProfileRepository().createProfileIfAbsent();
 
         bindViewsAndListeners();
         setupNavController();
@@ -154,6 +157,11 @@ public class Dashboard extends AppCompatActivity implements View.OnClickListener
                 return;
             }
 
+            if (destId == R.id.profileFragment) {
+                selectedIconId = R.id.homeIcon;
+                applyTintForIcon(selectedIconId);
+                return;
+            }
 
             // Otherwise, map destination -> bottom icon.
             if (destId == R.id.homeFragment) {

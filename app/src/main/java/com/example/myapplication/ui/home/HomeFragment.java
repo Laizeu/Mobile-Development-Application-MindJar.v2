@@ -30,6 +30,11 @@ import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.LinearLayout;
 
+import androidx.navigation.Navigation;
+import android.widget.TextView;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.FirebaseFirestore;
 
 
 /**
@@ -62,8 +67,13 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
 
     // Slide menu
     private LinearLayout slideMenuPanel;
-    private LinearLayout menuTabHandle;   // LinearLayout — holds person icon
+    private LinearLayout menuTabHandle;
     private boolean      isMenuOpen = false;
+
+    private TextView menuProfile;
+    private TextView textWelcomeUser;
+
+
 
     /**
      * Required empty public constructor.
@@ -103,6 +113,8 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
                 showToast("Failed to save. Please try again.");
             }
         });
+
+        loadWelcomeName();
     }
 
 
@@ -119,6 +131,9 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
         textFeeling = view.findViewById(R.id.inputFeeling);
         slideMenuPanel = view.findViewById(R.id.slideMenuPanel);
         menuTabHandle  = view.findViewById(R.id.menuTabHandle);
+        menuProfile    = view.findViewById(R.id.menuProfile);
+        textWelcomeUser = view.findViewById(R.id.textWelcomeUser);
+
 
     }
 
@@ -138,6 +153,13 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
                     closeMenu();
                     showLogoutConfirmation();
                 });
+
+        menuProfile.setOnClickListener(v -> {
+            closeMenu();   // close panel before navigating
+            Navigation.findNavController(requireView())
+                    .navigate(R.id.action_homeFragment_to_profileFragment);
+        });
+
 
     }
 
@@ -389,6 +411,29 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
             startActivity(intent);
         });
+    }
+
+    private void loadWelcomeName() {
+        FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
+        if (currentUser == null || textWelcomeUser == null) return;
+
+        FirebaseFirestore.getInstance()
+                .collection("users")
+                .document(currentUser.getUid())
+                .get()
+                .addOnSuccessListener(doc -> {
+                    String name = doc.getString("displayName");
+                    if (name == null || name.trim().isEmpty()) {
+                        name = currentUser.getDisplayName();
+                    }
+                    if (name != null && !name.trim().isEmpty()) {
+                        String firstName = name.trim().split("\\s+")[0];
+                        if (firstName.length() > 12) {
+                            firstName = firstName.substring(0, 12) + "…";
+                        }
+                        textWelcomeUser.setText("Welcome, " + firstName + "!");
+                    }
+                });
     }
 
 

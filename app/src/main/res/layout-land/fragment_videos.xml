@@ -4,7 +4,7 @@
     res/layout-land/fragment_videos.xml
 
     Layout strategy (landscape):
-    • Left panel  (~38 %) : header card, centred vertically
+    • Left panel  (~38 %) : header card + caption, centred vertically
     • Vertical divider
     • Right panel (~62 %) : RecyclerView (grid) + empty state, fills full height
 -->
@@ -59,7 +59,7 @@
 
 
     <!-- ─────────────────────────────────────────────
-         LEFT PANEL — header card
+         LEFT PANEL — header card + caption
          ───────────────────────────────────────────── -->
 
     <androidx.cardview.widget.CardView
@@ -71,11 +71,11 @@
         app:cardElevation="2dp"
         app:cardBackgroundColor="#F4FCD9"
         app:layout_constraintTop_toBottomOf="@id/guidelineTopRail"
-        app:layout_constraintBottom_toBottomOf="@id/guidelineBottomRail"
         app:layout_constraintStart_toStartOf="@id/guidelineLeftInner"
         app:layout_constraintEnd_toStartOf="@id/guidelineLeftOuter"
-        app:layout_constraintVertical_bias="0.5"
-        app:layout_constraintHeight_default="wrap">
+        app:layout_constraintBottom_toTopOf="@id/textView1"
+        app:layout_constraintVertical_chainStyle="packed"
+        app:layout_constraintVertical_bias="0.5">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -103,6 +103,21 @@
                 android:textStyle="bold" />
         </LinearLayout>
     </androidx.cardview.widget.CardView>
+
+    <!-- ✏️ NEW: Caption — matches portrait and mirrors Hope/Hotline landscape pattern -->
+    <TextView
+        android:id="@+id/textView1"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:gravity="center"
+        android:text="@string/videos_caption"
+        android:textSize="12sp"
+        android:textStyle="bold"
+        app:layout_constraintTop_toBottomOf="@id/cardView"
+        app:layout_constraintStart_toStartOf="@id/guidelineLeftInner"
+        app:layout_constraintEnd_toStartOf="@id/guidelineLeftOuter"
+        app:layout_constraintBottom_toBottomOf="@id/guidelineBottomRail" />
 
 
     <!-- ─────────────────────────────────────────────

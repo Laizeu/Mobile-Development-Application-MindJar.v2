@@ -7,12 +7,12 @@
 
     <!-- Head -->
     <path
-        android:fillColor="#FFFFFF"
+        android:fillColor="#000000"
         android:pathData="M12,12m-4,0a4,4 0,1 1,8 0a4,4 0,1 1,-8 0" />
 
     <!-- Body / shoulders -->
     <path
-        android:fillColor="#FFFFFF"
+        android:fillColor="#000000"
         android:pathData="M4,20 C4,16.686 7.582,14 12,14
                           C16.418,14 20,16.686 20,20 L4,20Z" />
 

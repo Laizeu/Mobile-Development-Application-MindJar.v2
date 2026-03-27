@@ -27,6 +27,7 @@ import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.fragment.NavHostFragment;
 
@@ -44,6 +45,15 @@ import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
 
 import com.example.myapplication.data.repository.AuthRepository;
+
+import com.example.myapplication.data.repository.ProfileRepository;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.SetOptions;
+
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * LoginFragment handles the Login UI and validation logic.
@@ -327,6 +337,7 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
                 // Firebase is already signed in — no manual session needed
                 openDashboard();
                 requireActivity().finish(); // prevent back to login
+
             }
 
             @Override
@@ -389,6 +400,7 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
                             repo.loginWithGoogleIdToken(idToken, new AuthRepository.AuthCallback() {
                                 @Override
                                 public void onSuccess() {
+                                    syncGoogleDisplayName();
                                     openDashboard();
                                     requireActivity().finish();
                                 }
@@ -396,13 +408,13 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
                                 @Override
                                 public void onError(String errorMessage) {
                                     Toast.makeText(requireContext(),
-                                            errorMessage,
+                                            "log‑in failed. Try again.",
                                             Toast.LENGTH_LONG).show();
                                 }
                             });
                         } else {
                             Toast.makeText(requireContext(),
-                                    "Google token is null",
+                                    "Google Sign-In failed. Please try again.",
                                     Toast.LENGTH_LONG).show();
                         }
                     } catch (ApiException e) {
@@ -418,6 +430,7 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
     private void showForgotPasswordDialog() {
         TextInputLayout layout = new TextInputLayout(requireContext());
         layout.setHint("Email address");
+        layout.setErrorEnabled(true); // pre-enable so the error space is reserved
 
         TextInputEditText emailInput = new TextInputEditText(requireContext());
         emailInput.setInputType(android.text.InputType.TYPE_TEXT_VARIATION_EMAIL_ADDRESS);
@@ -426,37 +439,72 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
         int padding = (int) (16 * getResources().getDisplayMetrics().density);
         layout.setPadding(padding, padding, padding, 0);
 
-        new MaterialAlertDialogBuilder(requireContext())
+        // This prevents MaterialAlertDialogBuilder from auto-dismissing on tap.
+        AlertDialog dialog = new MaterialAlertDialogBuilder(requireContext())
                 .setTitle("Reset Password")
                 .setMessage("Enter your account email and we'll send you a reset link.")
                 .setView(layout)
-                .setPositiveButton("Send", (dialog, which) -> {
-                    String email = emailInput.getText() == null ? ""
-                            : emailInput.getText().toString().trim();
-
-                    if (email.isEmpty() || !Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
-                        layout.setError("Enter a valid email");
-                        return;   // keep dialog open
-                    }
-
-                    AuthRepository repo = new AuthRepository();
-                    repo.sendPasswordReset(email, new AuthRepository.AuthCallback() {
-                        @Override
-                        public void onSuccess() {
-                            Toast.makeText(requireContext(),
-                                    "Reset link sent — check your inbox.",
-                                    Toast.LENGTH_LONG).show();
-                        }
-
-                        @Override
-                        public void onError(String errorMessage) {
-                            Toast.makeText(requireContext(),
-                                    "Error: " + errorMessage,
-                                    Toast.LENGTH_LONG).show();
-                        }
-                    });
-                })
+                .setPositiveButton("Send", null)  // null = do NOT auto-dismiss
                 .setNegativeButton("Cancel", null)
-                .show();
+                .create();
+
+        dialog.show();
+
+        dialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener(v -> {
+            String email = emailInput.getText() == null ? ""
+                    : emailInput.getText().toString().trim();
+
+            if (email.isEmpty() || !Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
+                layout.setError("Enter a valid email address");
+                return; // dialog stays open — user sees the error
+            }
+
+            // Clear any previous error before sending.
+            layout.setError(null);
+
+            AuthRepository repo = new AuthRepository();
+            repo.sendPasswordReset(email, new AuthRepository.AuthCallback() {
+                @Override
+                public void onSuccess() {
+                    dialog.dismiss(); // ✅ Only dismiss on success
+                    Toast.makeText(requireContext(),
+                            "Reset link sent — check your inbox.",
+                            Toast.LENGTH_LONG).show();
+                }
+                @Override
+                public void onError(String errorMessage) {
+                    // Keep dialog open so user can try again.
+                    layout.setError("Failed to send reset link. Please try again.");
+                }
+            });
+        });
     }
+
+    private void syncGoogleDisplayName() {
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        if (user == null) return;
+
+        FirebaseFirestore.getInstance()
+                .collection("users")
+                .document(user.getUid())
+                .get()
+                .addOnSuccessListener(doc -> {
+                    String existingName = doc.getString("displayName");
+                    if (existingName != null && !existingName.trim().isEmpty()) {
+                        return; // ✅ preserve the user's saved name
+                    }
+                    String googleName = user.getDisplayName();
+                    if (googleName != null && !googleName.trim().isEmpty()) {
+                        Map<String, Object> update = new HashMap<>();
+                        update.put("displayName", googleName);
+                        FirebaseFirestore.getInstance()
+                                .collection("users")
+                                .document(user.getUid())
+                                .set(update, SetOptions.merge());
+                    } else {
+                        new ProfileRepository().createProfileIfAbsent();
+                    }
+                });
+    }
+
 }

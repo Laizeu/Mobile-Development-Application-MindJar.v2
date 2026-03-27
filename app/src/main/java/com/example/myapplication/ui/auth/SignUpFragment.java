@@ -28,6 +28,7 @@ import com.example.myapplication.data.repository.AuthRepository;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
 
+import com.example.myapplication.data.repository.ProfileRepository;
 
 import java.util.regex.Pattern;
 
@@ -247,7 +248,7 @@ public class SignUpFragment extends Fragment {
 
             @Override
             public void onSuccess() {
-                Toast.makeText(requireContext(),
+               Toast.makeText(requireContext(),
                         "Account created successfully!",
                         Toast.LENGTH_LONG).show();
                 startActivity(new Intent(requireContext(), Dashboard.class));
@@ -256,10 +257,15 @@ public class SignUpFragment extends Fragment {
 
             @Override
             public void onError(String errorMessage) {
-                // Firebase returns readable messages like:
-                // "The email address is already in use by another account."
-                Toast.makeText(requireContext(),
-                        errorMessage, Toast.LENGTH_LONG).show();
+                String userMessage;
+                if (errorMessage.contains("email address is already in use")) {
+                    userMessage = "Email already registered. Try logging in.";
+                } else if (errorMessage.contains("network")) {
+                    userMessage = "No internet connection. Please try again.";
+                } else {
+                    userMessage = "Sign-up failed. Please try again.";
+                }
+                Toast.makeText(requireContext(), userMessage, Toast.LENGTH_LONG).show();
             }
         });
     }

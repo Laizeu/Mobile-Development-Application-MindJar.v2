@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources xmlns:tools="http://schemas.android.com/tools" tools:ignore="TypographyDashes,Typos">
 
-    <string name="app_name">MINDJAR</string>
+    <string name="app_name">MindJar</string>
     <string name="hello_blank_fragment">Hello blank fragment</string>
 
     <!-- Dashboard labels -->
@@ -42,12 +42,6 @@
     <!-- HOTLINE -->
     <string name="hotline_header">Hotline</string>
     <string name="hotline_caption">“If you ever feel overwhelmed, remember that reaching out is a sign of strength, not weakness. You are not alone—help is just one call away.”</string>
-    <string name="hotline_ncmh_title">National Center for Mental Health (NCMH) Crisis</string>
-    <string name="hotline_ncmh_detail">Hotline: Dial 1553 (toll-free) or 1800-1888-1553.</string>
-    <string name="hotline_hopeline_title">Hopeline</string>
-    <string name="hotline_hopeline_detail">Hotline: (02) 8804-4673, 0918-878-4673 Globe, dial the toll-free code 2919.</string>
-    <string name="hotline_touch_title">Touch Community Services Crisis Lines</string>
-    <string name="hotline_touch_detail">Hotline: (02) 8893-7603 and 0922-893-8944 (Sun).</string>
 
     <!-- VIDEOS -->
     <string name="videos_header">Hope of Motion</string>
@@ -80,6 +74,8 @@
     <string name="cd_video_thumb_2">Video thumbnail 2</string>
     <string name="cd_video_thumb_3">Video thumbnail 3</string>
     <string name="cd_video_play">Play button</string>
+    <string name="tagline_hope">Play button</string>
+
 
     <!-- LOGIN -->
     <string name="app_tagline">YOUR EMOTIONS MATTER</string>

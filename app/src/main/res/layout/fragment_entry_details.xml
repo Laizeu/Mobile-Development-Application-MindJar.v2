@@ -11,6 +11,7 @@
         android:layout_width="0dp"
         android:layout_height="?attr/actionBarSize"
         android:background="@color/button_green"
+        android:paddingTop="10dp"
         android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
         app:title="Entry Details"
         app:navigationIcon="@drawable/ic_arrow_back"
@@ -33,7 +34,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
 
-    <!-- Emotion chip / label -->
+    <!-- Emotion icon -->
     <ImageView
         android:id="@+id/txtDetailEmotion"
         android:layout_width="56dp"
@@ -50,27 +51,37 @@
         app:layout_constraintTop_toBottomOf="@id/txtDetailDate"
         app:layout_constraintStart_toStartOf="parent" />
 
-
-    <!-- Description body -->
-    <TextView
-        android:id="@+id/txtDetailDescription"
+    <!--
+        ScrollView fills the space between the emotion icon (top) and the
+        Edit button (bottom) — same pattern as the landscape left panel.
+        height="0dp" + both top/bottom constraints = fixed scrollable region,
+        so the buttons are always visible below it.
+    -->
+    <ScrollView
+        android:id="@+id/scrollDescription"
         android:layout_width="0dp"
-        android:layout_height="wrap_content"
+        android:layout_height="0dp"
         android:layout_marginStart="20dp"
-        android:layout_marginTop="2dp"
+        android:layout_marginTop="10dp"
         android:layout_marginEnd="20dp"
-        android:layout_marginBottom="40dp"
-        android:lineSpacingMultiplier="1.5"
-        android:text="Entry preview..."
-        android:textSize="16sp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="parent"
+        android:layout_marginBottom="12dp"
+        android:fadeScrollbars="false"
         app:layout_constraintTop_toBottomOf="@id/txtDetailEmotion"
-        app:layout_constraintVertical_bias="0.048" />
+        app:layout_constraintBottom_toTopOf="@id/btnEdit"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
 
+        <TextView
+            android:id="@+id/txtDetailDescription"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:lineSpacingMultiplier="1.5"
+            android:text="Entry preview..."
+            android:textSize="16sp" />
 
+    </ScrollView>
+
+    <!-- EDIT BUTTON — pinned above Delete -->
     <Button
         android:id="@+id/btnEdit"
         android:layout_width="0dp"
@@ -85,7 +96,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
 
-    <!-- DELETE BUTTON  -->
+    <!-- DELETE BUTTON — pinned to bottom of screen -->
     <Button
         android:id="@+id/btnDelete"
         android:layout_width="0dp"

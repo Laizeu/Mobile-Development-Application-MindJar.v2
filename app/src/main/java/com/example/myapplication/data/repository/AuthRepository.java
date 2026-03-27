@@ -22,19 +22,28 @@ public class AuthRepository {
                         if (user != null) {
                             UserProfileChangeRequest req =
                                     new UserProfileChangeRequest.Builder()
-                                            .setDisplayName(fullName)
-                                            .build();
-                            user.updateProfile(req);
+                                            .setDisplayName(fullName).build();
+
+                            // CHANGED: wait for updateProfile to finish
+                            // before calling onSuccess so getDisplayName()
+                            // is guaranteed to return the correct value.
+                            user.updateProfile(req)
+                                    .addOnSuccessListener(v -> callback.onSuccess())
+                                    .addOnFailureListener(e -> callback.onSuccess());
+                            // Note: call onSuccess even if updateProfile fails.
+                            // The account was created — a name update failure
+                            // should not block the user from entering the app.
+                        } else {
+                            callback.onSuccess();
                         }
-                        callback.onSuccess();
                     } else {
                         String msg = task.getException() != null
-                                ? task.getException().getMessage()
-                                : "Registration failed";
+                                ? task.getException().getMessage() : "Registration failed";
                         callback.onError(msg);
                     }
                 });
     }
+
 
     /**
      * Signs in an existing user with email + password.

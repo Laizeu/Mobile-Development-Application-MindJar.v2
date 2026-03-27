@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <!-- ═══════════════════════════════════════════════════ -->
+    <!-- SEMANTIC TOKENS — Dark Mode values                  -->
+    <!-- Must mirror the exact same names in values/colors.xml -->
+    <!-- ═══════════════════════════════════════════════════ -->
+    <color name="color_background">#121411</color>
+    <color name="color_surface">#1A1C18</color>
+    <color name="color_header_card">#F4FCD9</color>
+    <color name="color_divider">#3A3D38</color>
+    <color name="color_text_primary">#FFFFFFFF</color>
+    <color name="color_text_secondary">#A0A39B</color>
+    <color name="color_icon_tint">#E2E3DC</color>
+    <color name="color_card_background">#1E2733</color>
+    <color name="color_selected_icon_bg">#3D5A27</color>
+
+</resources>
