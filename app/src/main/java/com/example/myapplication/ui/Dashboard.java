@@ -26,6 +26,10 @@ import com.example.myapplication.data.repository.ProfileRepository;
 import com.example.myapplication.util.SyncJournalWorker;
 import java.util.concurrent.TimeUnit;
 
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import android.content.Intent;
+
 
 /*
  * Dashboard Activity
@@ -105,6 +109,7 @@ public class Dashboard extends AppCompatActivity implements View.OnClickListener
         );
 
     }
+
 
     @Override
     public void onSaveInstanceState(@NonNull Bundle outState) {

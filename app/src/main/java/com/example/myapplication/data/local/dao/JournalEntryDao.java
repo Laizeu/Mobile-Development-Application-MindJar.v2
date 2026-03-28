@@ -50,5 +50,9 @@ public interface JournalEntryDao {
     void deleteByEntryId(long entryId);
 
 
+    @Query("DELETE FROM journal_entries WHERE userId = :userId")
+    void deleteAllByUser(String userId);
+
+
 
 }

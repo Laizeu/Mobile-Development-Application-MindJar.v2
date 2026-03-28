@@ -9,6 +9,7 @@
     <color name="gray">#555555</color>
     <color name="logout">#FF000000</color>
 
+
     <!-- ═══════════════════════════════════════════════════ -->
     <!-- DIALOG COLORS                                       -->
     <!-- ═══════════════════════════════════════════════════ -->
@@ -23,6 +24,7 @@
     <!-- ═══════════════════════════════════════════════════ -->
     <!-- LIGHT THEME — Brand / Primary                       -->
     <!-- ═══════════════════════════════════════════════════ -->
+    <color name="button_delete">#555555</color>
     <color name="button_green">#73903F</color>
     <color name="on_primary">#FFFFFF</color>
     <color name="card_happy">#C5D8A4</color>

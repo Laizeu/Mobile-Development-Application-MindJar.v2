@@ -29,16 +29,31 @@
         <!-- Avatar placeholder -->
         <ImageView
             android:id="@+id/ivAvatar"
-            android:layout_width="90dp"
+            android:layout_width="100dp"
             android:layout_height="90dp"
             android:layout_marginTop="24dp"
             android:src="@drawable/ic_person"
-            android:background="@drawable/tab_handle_shape"
-            android:contentDescription="Profile photo"
-            android:padding="16dp"
+            android:contentDescription="Tap to change avatar"
+            android:clickable="true"
+            android:focusable="true"
             app:layout_constraintTop_toBottomOf="@id/toolbar"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent" />
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintBottom_toTopOf="@id/tvAvatarHint" />
+
+        <!-- hint label — chain below avatar -->
+        <TextView
+            android:id="@+id/tvAvatarHint"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:text="Tap to change"
+            android:textSize="11sp"
+            android:textColor="?android:attr/textColorSecondary"
+            app:layout_constraintTop_toBottomOf="@id/ivAvatar"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintBottom_toTopOf="@id/tilDisplayName" />
 
         <!-- Display Name — editable -->
         <com.google.android.material.textfield.TextInputLayout
@@ -98,7 +113,22 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent" />
 
-        <!-- Save button — pinned to bottom, same as fragment_edit_entry -->
+        <!-- Delete Account button -->
+        <Button
+            android:id="@+id/btnDeleteAccount"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="24dp"
+            android:layout_marginEnd="24dp"
+            android:layout_marginBottom="8dp"
+            android:backgroundTint="@color/button_delete"
+            android:textColor="@android:color/white"
+            android:text="Delete Account"
+            app:layout_constraintBottom_toTopOf="@id/btnSaveProfile"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent" />
+
+        <!-- Save button  -->
         <Button
             android:id="@+id/btnSaveProfile"
             android:layout_width="0dp"

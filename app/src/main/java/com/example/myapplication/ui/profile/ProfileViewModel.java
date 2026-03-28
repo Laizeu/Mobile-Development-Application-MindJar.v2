@@ -7,14 +7,18 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import com.example.myapplication.data.repository.ProfileRepository;
 
+import com.example.myapplication.data.local.AppDatabase;
+
 public class ProfileViewModel extends AndroidViewModel {
 
     private final ProfileRepository repository = new ProfileRepository();
 
-    private final MutableLiveData<String> displayName   = new MutableLiveData<>();
-    private final MutableLiveData<String> email         = new MutableLiveData<>();
-    private final MutableLiveData<Long>   joinedAt      = new MutableLiveData<>();
-    private final MutableLiveData<String> statusMessage = new MutableLiveData<>();
+    private final MutableLiveData<String>  displayName   = new MutableLiveData<>();
+    private final MutableLiveData<String>  email         = new MutableLiveData<>();
+    private final MutableLiveData<Long>    joinedAt      = new MutableLiveData<>();
+    private final MutableLiveData<String>  statusMessage = new MutableLiveData<>();
+    private final MutableLiveData<Integer> avatarId      = new MutableLiveData<>(1);
+
 
     public ProfileViewModel(@NonNull Application app) { super(app); }
 
@@ -26,11 +30,13 @@ public class ProfileViewModel extends AndroidViewModel {
     public void loadProfile() {
         repository.loadProfile(new ProfileRepository.LoadCallback() {
             @Override
-            public void onLoaded(String name, String mail, long joined) {
+            public void onLoaded(String name, String mail, long joined, int id) {
                 displayName.postValue(name);
                 email.postValue(mail);
                 joinedAt.postValue(joined);
+                avatarId.postValue(id);
             }
+
             @Override
             public void onError(String message) {
                 statusMessage.postValue("Could not load profile: " + message);
@@ -60,4 +66,34 @@ public class ProfileViewModel extends AndroidViewModel {
     public void clearStatus() {
         statusMessage.setValue(null);
     }
+
+    public LiveData<Integer> getAvatarId() { return avatarId; }
+
+    public void saveAvatarId(int id) {
+        avatarId.setValue(id);   // update UI instantly (optimistic)
+        repository.saveAvatarId(id, new ProfileRepository.ProfileCallback() {
+            @Override public void onSuccess() {
+                statusMessage.postValue("Avatar updated!");
+            }
+            @Override public void onError(String message) {
+                statusMessage.postValue("Failed to save avatar: " + message);
+            }
+        });
+    }
+
+
+    public void deleteAccount(android.content.Context context, AppDatabase roomDb) {
+        repository.deleteAccount(context, roomDb,
+                new ProfileRepository.DeleteCallback() {
+                    @Override public void onSuccess() {
+                        statusMessage.postValue("ACCOUNT_DELETED");
+                    }
+                    @Override public void onError(String message) {
+                        statusMessage.postValue("Error: " + message);
+                    }
+                });
+    }
+
+
+
 }

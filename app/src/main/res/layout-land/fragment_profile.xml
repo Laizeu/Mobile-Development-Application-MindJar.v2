@@ -15,7 +15,7 @@
     android:layout_height="match_parent"
     android:fillViewport="true"
     android:saveEnabled="false"
-    android:background="@color/background_light">
+    >
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
@@ -97,7 +97,7 @@
 
 
         <!-- ─────────────────────────────────────────────
-             LEFT PANEL — avatar + display name label
+             LEFT PANEL — avatar + hint + name label
              ───────────────────────────────────────────── -->
 
         <ImageView
@@ -105,30 +105,50 @@
             android:layout_width="72dp"
             android:layout_height="72dp"
             android:src="@drawable/ic_person"
-            android:background="@drawable/tab_handle_shape"
-            android:contentDescription="Profile photo"
-            android:padding="12dp"
+            android:clickable="true"
+            android:focusable="true"
+            android:contentDescription="Tap to change avatar"
             app:layout_constraintTop_toBottomOf="@id/toolbar"
-            app:layout_constraintBottom_toTopOf="@id/tvAvatarLabel"
+            app:layout_constraintBottom_toTopOf="@id/tvAvatarHint"
             app:layout_constraintStart_toStartOf="@id/guidelineLeftInner"
             app:layout_constraintEnd_toStartOf="@id/guidelineLeftOuter"
             app:layout_constraintVertical_chainStyle="packed"
             app:layout_constraintVertical_bias="0.5" />
 
         <TextView
+            android:id="@+id/tvAvatarHint"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:gravity="center"
+            android:text="Tap to change"
+            android:textSize="10sp"
+            android:textColor="?android:attr/textColorSecondary"
+            app:layout_constraintTop_toBottomOf="@id/ivAvatar"
+            app:layout_constraintBottom_toTopOf="@id/tvAvatarLabel"
+            app:layout_constraintStart_toStartOf="@id/guidelineLeftInner"
+            app:layout_constraintEnd_toStartOf="@id/guidelineLeftOuter"
+            tools:ignore="MissingConstraints" />
+
+        <TextView
             android:id="@+id/tvAvatarLabel"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginTop="12dp"
+            android:layout_marginTop="8dp"
             android:gravity="center"
             android:text="My Profile"
             android:textSize="16sp"
             android:textStyle="bold"
-            app:layout_constraintTop_toBottomOf="@id/ivAvatar"
+            app:layout_constraintTop_toBottomOf="@id/tvAvatarHint"
             app:layout_constraintStart_toStartOf="@id/guidelineLeftInner"
             app:layout_constraintEnd_toStartOf="@id/guidelineLeftOuter"
             app:layout_constraintBottom_toTopOf="@id/tvJoinedAtLeft"
-            tools:ignore="MissingConstraints" />
+            />
+
+
+        <!-- ─────────────────────────────────────────────
+             VERTICAL DIVIDER
+             ───────────────────────────────────────────── -->
 
         <TextView
             android:id="@+id/tvJoinedAtLeft"
@@ -136,17 +156,13 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="6dp"
             android:gravity="center"
-            android:textSize="11sp"
             android:textColor="?android:attr/textColorSecondary"
-            app:layout_constraintTop_toBottomOf="@id/tvAvatarLabel"
-            app:layout_constraintStart_toStartOf="@id/guidelineLeftInner"
+            android:textSize="11sp"
+            app:layout_constraintBottom_toBottomOf="@id/guidelineBottomRail"
             app:layout_constraintEnd_toStartOf="@id/guidelineLeftOuter"
-            app:layout_constraintBottom_toBottomOf="@id/guidelineBottomRail" />
-
-
-        <!-- ─────────────────────────────────────────────
-             VERTICAL DIVIDER
-             ───────────────────────────────────────────── -->
+            app:layout_constraintHorizontal_bias="1.0"
+            app:layout_constraintStart_toStartOf="@id/guidelineLeftInner"
+            app:layout_constraintTop_toBottomOf="@id/tvAvatarLabel" />
 
         <View
             android:id="@+id/divider"
@@ -159,7 +175,7 @@
 
 
         <!-- ─────────────────────────────────────────────
-             RIGHT PANEL — form fields + save button
+             RIGHT PANEL — form fields + buttons
              ───────────────────────────────────────────── -->
 
         <!-- Display Name -->
@@ -217,19 +233,34 @@
             app:layout_constraintTop_toBottomOf="@id/tilEmail"
             app:layout_constraintStart_toStartOf="@id/guidelineRightInner"
             app:layout_constraintEnd_toStartOf="@id/guidelineRightOuter"
-            app:layout_constraintBottom_toTopOf="@id/btnSaveProfile" />
+            app:layout_constraintBottom_toTopOf="@id/btnDeleteAccount" />
 
-        <!-- Save button — pinned to bottom rail -->
+        <!-- Delete Account -->
+        <Button
+            android:id="@+id/btnDeleteAccount"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="4dp"
+            android:layout_marginBottom="8dp"
+            android:backgroundTint="@color/button_delete"
+            android:textColor="@android:color/white"
+            android:text="Delete Account"
+            app:layout_constraintBottom_toTopOf="@id/guidelineBottomRail"
+            app:layout_constraintStart_toStartOf="@id/guidelineRightInner"
+            app:layout_constraintEnd_toStartOf="@id/btnSaveProfile"
+            app:layout_constraintHorizontal_chainStyle="spread" />
+
         <Button
             android:id="@+id/btnSaveProfile"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:layout_marginStart="4dp"
             android:layout_marginBottom="8dp"
             android:backgroundTint="@color/button_green"
             android:textColor="@android:color/white"
             android:text="Save Changes"
             app:layout_constraintBottom_toTopOf="@id/guidelineBottomRail"
-            app:layout_constraintStart_toStartOf="@id/guidelineRightInner"
+            app:layout_constraintStart_toEndOf="@id/btnDeleteAccount"
             app:layout_constraintEnd_toStartOf="@id/guidelineRightOuter" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
