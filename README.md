@@ -14,7 +14,7 @@ MindJar is an Android mental wellness journaling app that helps users log emotio
 - **Videos Screen** — Curated YouTube wellness videos loaded from Firebase Realtime Database
 - **Hotline Screen** — Crisis contact cards with tap-to-call, email, and Facebook links
 - **Google Sign-In** — Sign in with email/password or Google account
-- **Offline-First** — All screens serve Room cache instantly; Firebase refreshes in background
+- **Offline-First** — Journaling screens serve Room cache instantly; Firebase refreshes in background
 - **Background Sync** — WorkManager retries any unsynced journal entries automatically
 - **Slide Menu & Logout** — Animated side panel on Home screen with logout confirmation
 - **User Profile** — View and edit display name, and add avatar
