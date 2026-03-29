@@ -23,16 +23,12 @@ public class AuthRepository {
                             UserProfileChangeRequest req =
                                     new UserProfileChangeRequest.Builder()
                                             .setDisplayName(fullName).build();
-
-                            // CHANGED: wait for updateProfile to finish
                             // before calling onSuccess so getDisplayName()
                             // is guaranteed to return the correct value.
                             user.updateProfile(req)
                                     .addOnSuccessListener(v -> callback.onSuccess())
                                     .addOnFailureListener(e -> callback.onSuccess());
-                            // Note: call onSuccess even if updateProfile fails.
-                            // The account was created — a name update failure
-                            // should not block the user from entering the app.
+
                         } else {
                             callback.onSuccess();
                         }

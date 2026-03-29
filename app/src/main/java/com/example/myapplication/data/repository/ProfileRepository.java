@@ -68,11 +68,10 @@ public class ProfileRepository {
                 .addOnFailureListener(e -> callback.onError(e.getMessage()));
     }
 
-    // ── updateDisplayName() ─────────────────────────────────────────
+
     // Step 1 — Update Firestore (source of truth for profile reads).
     // Step 2 — Update FirebaseAuth display name so the welcome greeting
     //          on the Home screen also refreshes.
-    // Both steps must succeed; if Firestore fails we do not update Auth.
     public void updateDisplayName(String newName, ProfileCallback callback) {
         FirebaseUser user = auth.getCurrentUser();
         if (user == null) { callback.onError("Not logged in"); return; }

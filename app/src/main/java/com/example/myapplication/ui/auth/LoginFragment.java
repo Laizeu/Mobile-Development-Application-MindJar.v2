@@ -34,6 +34,7 @@ import androidx.navigation.fragment.NavHostFragment;
 import com.example.myapplication.ui.Dashboard;
 import com.example.myapplication.R;
 
+import com.example.myapplication.util.NetworkUtils;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
@@ -151,7 +152,12 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
 
         if (iconGoogle != null) {
             iconGoogle.setOnClickListener(v -> {
-
+                if (!NetworkUtils.isConnected(requireContext())) {
+                    Toast.makeText(requireContext(),
+                            "No internet connection. Please check your network and try again.",
+                            Toast.LENGTH_LONG).show();
+                    return;
+                }
                 // null-guard — prevents NPE when Google auth is unconfigured
                 if (googleSignInClient == null) {
                     Toast.makeText(requireContext(),
@@ -330,6 +336,13 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
 
     private void tryLogin(String email, String password) {
 
+        if (!NetworkUtils.isConnected(requireContext())) {
+            Toast.makeText(requireContext(),
+                    "No internet connection. Please check your network and try again.",
+                    Toast.LENGTH_LONG).show();
+            return;
+        }
+
         repo.login(email, password, new AuthRepository.AuthCallback() {
 
             @Override
@@ -408,7 +421,7 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
                                 @Override
                                 public void onError(String errorMessage) {
                                     Toast.makeText(requireContext(),
-                                            "log‑in failed. Try again.",
+                                            "Log‑in failed. Try again.",
                                             Toast.LENGTH_LONG).show();
                                 }
                             });

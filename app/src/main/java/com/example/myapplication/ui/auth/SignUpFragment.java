@@ -25,6 +25,7 @@ import androidx.navigation.fragment.NavHostFragment;
 import com.example.myapplication.ui.Dashboard;
 import com.example.myapplication.R;
 import com.example.myapplication.data.repository.AuthRepository;
+import com.example.myapplication.util.NetworkUtils;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
 
@@ -242,6 +243,14 @@ public class SignUpFragment extends Fragment {
      * Creates user via Firebase Auth, then navigates to Dashboard
      */
     private void handleSignup(String fullName, String email, String password) {
+
+        if (!NetworkUtils.isConnected(requireContext())) {
+            Toast.makeText(requireContext(),
+                    "No internet connection. Please check your network and try again.",
+                    Toast.LENGTH_LONG).show();
+            return;
+        }
+
         AuthRepository repo = new AuthRepository();
 
         repo.createUser(fullName, email, password, new AuthRepository.AuthCallback() {
@@ -258,7 +267,7 @@ public class SignUpFragment extends Fragment {
             @Override
             public void onError(String errorMessage) {
                 String userMessage;
-                if (errorMessage.contains("email address is already in use")) {
+                if (errorMessage.contains("Email address is already in use")) {
                     userMessage = "Email already registered. Try logging in.";
                 } else if (errorMessage.contains("network")) {
                     userMessage = "No internet connection. Please try again.";
