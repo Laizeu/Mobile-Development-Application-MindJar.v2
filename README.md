@@ -1,6 +1,6 @@
 # MindJar
 
-MindJar is an Android mental wellness journaling app that helps users log emotions, reflect on their thoughts, and access mental health resources. Users can record how they're feeling, browse their journal history, view motivational images, watch curated wellness videos, and reach out to crisis hotlines — all with offline support.
+MindJar is an Android mental wellness journaling app that helps users log emotions, reflect on their thoughts, and access mental health resources. Users can record how they're feeling, browse their journal history, view motivational images, watch curated wellness videos, and reach out to crisis hotlines.
 
 ---
 
